@@ -1,39 +1,31 @@
-# ADS-509 — Sentiment Model Comparison Dashboard
+# ADS-509 — Sentiment Model Comparison
 
-An interactive [Streamlit](https://streamlit.io) app that presents the results of the
-ADS-509 Applied Text Mining final project:
-**Comparing Traditional NLP and Transformer-Based Models for Review Sentiment Classification.**
+A simple [Streamlit](https://streamlit.io) dashboard for the ADS-509 final project:
+**Traditional NLP vs. Transformers for Review Sentiment Classification.**
 
 > **Live app:** https://ads509projectresultsteamgroup4.streamlit.app
 > **Team:** Gagandeep Singh · Shivam Patel · Luigi Salemi
 > **Course:** ADS-509 Applied Text Mining — University of San Diego
 
-Dark UI using BlueprintJS v6 colors (gray base, blue primary) with Lucide icons.
+One scrolling page: dataset overview, EDA, model comparison, and a live "try it" classifier.
 
-## What it shows
+## Data & results
 
-| Section | Contents |
-|---|---|
-| 🏠 Overview | Project objective, pipeline, headline metrics |
-| 🗂️ Dataset | Star-rating distribution, balanced binary sample, dedup stats |
-| 🔎 Exploratory Analysis | Review length by sentiment, top-20 words, word cloud |
-| 🧮 TF-IDF Features | Top distinctive terms selected by TF-IDF |
-| 🤖 Model Results | LR metrics + report; DistilBERT metrics, workflow, classification report & confusion matrix |
-| ⚖️ Model Comparison | Classic baseline (91.2%) vs. fine-tuned DistilBERT (94.6%) |
-| 📌 Conclusion | Key takeaways, limitations, and next steps |
-| 🧪 Try it Live | Classify your own review with a **classic** model **and** a **pretrained transformer** |
+All figures come from **one end-to-end run** of the notebook's pipeline on the project's real
+dataset — **Amazon Reviews 2023 (McAuley-Lab)**, ~10K reviews across 10 product categories,
+balanced and split stratified 80/20. No scraping; nothing estimated.
 
-Results are the team's finalized figures from the project presentation
-(*Traditional NLP vs. Transformers for Sentiment Classification*), cross-checked against the
-executed team notebook (`ADS_509_Final_Team_Project_.ipynb`). Headline result: the
-fine-tuned **DistilBERT (94.6% accuracy / F1)** beats the **TF-IDF + Logistic Regression
-baseline (91.2%)** by ~3.5 points. Because the notebook scrapes Google Play **live**, each
-run varies slightly, so the dashboard pins the presentation's reported numbers.
+| Model | Accuracy | F1 |
+|---|---|---|
+| TF-IDF + Logistic Regression | **90.0%** | 90.0% |
+| Fine-tuned DistilBERT | **94.0%** | 94.0% |
 
-> **Note on the live demo:** the *classic* model is trained at runtime on a bundled review
-> corpus, and the *transformer* is an off-the-shelf **pretrained** sentiment model
-> (`distilbert-base-uncased-finetuned-sst-2-english`) used for inference. It is a hands-on
-> demonstration and is intentionally separate from the project's own fine-tuned DistilBERT.
+The pipeline is reproduced in `run_from_csv.py`; `build_results.py` writes `results.py` from its
+output (`results_real.json`).
+
+> **Live demo note:** the *classic* model is trained at runtime on the bundled reviews; the
+> *transformer* is an off-the-shelf pretrained model
+> (`distilbert-base-uncased-finetuned-sst-2-english`) used for inference (optional checkbox).
 
 ## Run locally
 
@@ -42,22 +34,13 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The transformer in **Try it Live** downloads ~250 MB on first use; leave its checkbox off
-for an instant classic-model-only result.
-
-## Deploy to Streamlit Community Cloud
-
-1. Push this repo to GitHub (already done if you cloned it from there).
-2. Go to **https://share.streamlit.io** and sign in.
-3. **New app → From existing repo**, pick this repo, branch `main`, main file `app.py`.
-4. Click **Deploy**. First build takes a few minutes (it installs PyTorch).
-
 ## Files
 
 ```
-app.py            # the dashboard
-results.py        # captured results from the notebook (single source of truth)
-requirements.txt  # dependencies (CPU-only torch)
-data/             # bundled review CSV used by the live classic model
-assets/           # word cloud image
+app.py             # the dashboard (single page)
+results.py         # numbers from the real run (generated)
+run_from_csv.py    # reproduces the notebook pipeline on the real dataset
+build_results.py   # results_real.json -> results.py
+data/reviews.csv   # real review data used by the live classic model
+assets/            # word cloud image
 ```

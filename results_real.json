@@ -1,0 +1,672 @@
+{
+  "dataset": "Amazon Reviews 2023 (McAuley-Lab)",
+  "raw_count": 9963,
+  "rating_distribution": {
+    "1": 2532,
+    "2": 1455,
+    "4": 1124,
+    "5": 4852
+  },
+  "category_dist": {
+    "Electronics": 999,
+    "Home & Kitchen": 999,
+    "Office Products": 998,
+    "Beauty & Personal Care": 998,
+    "Cell Phones & Accessories": 998,
+    "Clothing Shoes & Jewelry": 997,
+    "Toys & Games": 996,
+    "Sports & Outdoors": 996,
+    "Automotive": 994,
+    "Pet Supplies": 988
+  },
+  "balanced_total": 7974,
+  "label_balance": {
+    "Positive (1)": 3987,
+    "Negative (0)": 3987
+  },
+  "unique_reviews": 7974,
+  "duplicate_reviews": 0,
+  "avg_review_length": {
+    "Negative (0)": 59.4,
+    "Positive (1)": 54.9
+  },
+  "top_words": [
+    [
+      "like",
+      1652
+    ],
+    [
+      "one",
+      1508
+    ],
+    [
+      "would",
+      1494
+    ],
+    [
+      "use",
+      1227
+    ],
+    [
+      "get",
+      1137
+    ],
+    [
+      "great",
+      1127
+    ],
+    [
+      "really",
+      1012
+    ],
+    [
+      "it.",
+      1003
+    ],
+    [
+      "good",
+      970
+    ],
+    [
+      "/><br",
+      952
+    ],
+    [
+      "love",
+      848
+    ],
+    [
+      "Great",
+      842
+    ],
+    [
+      "work",
+      769
+    ],
+    [
+      "little",
+      735
+    ],
+    [
+      "even",
+      674
+    ],
+    [
+      "well",
+      671
+    ],
+    [
+      "easy",
+      658
+    ],
+    [
+      "phone",
+      657
+    ],
+    [
+      "quality",
+      635
+    ],
+    [
+      "new",
+      629
+    ]
+  ],
+  "top_words_full": [
+    [
+      "like",
+      1652
+    ],
+    [
+      "one",
+      1508
+    ],
+    [
+      "would",
+      1494
+    ],
+    [
+      "use",
+      1227
+    ],
+    [
+      "get",
+      1137
+    ],
+    [
+      "great",
+      1127
+    ],
+    [
+      "really",
+      1012
+    ],
+    [
+      "it.",
+      1003
+    ],
+    [
+      "good",
+      970
+    ],
+    [
+      "/><br",
+      952
+    ],
+    [
+      "love",
+      848
+    ],
+    [
+      "Great",
+      842
+    ],
+    [
+      "work",
+      769
+    ],
+    [
+      "little",
+      735
+    ],
+    [
+      "even",
+      674
+    ],
+    [
+      "well",
+      671
+    ],
+    [
+      "easy",
+      658
+    ],
+    [
+      "phone",
+      657
+    ],
+    [
+      "quality",
+      635
+    ],
+    [
+      "new",
+      629
+    ],
+    [
+      "fit",
+      623
+    ],
+    [
+      "nice",
+      617
+    ],
+    [
+      "product",
+      616
+    ],
+    [
+      "used",
+      583
+    ],
+    [
+      "much",
+      579
+    ],
+    [
+      "time",
+      570
+    ],
+    [
+      "put",
+      565
+    ],
+    [
+      "never",
+      564
+    ],
+    [
+      "also",
+      555
+    ],
+    [
+      "reviews",
+      552
+    ],
+    [
+      "small",
+      546
+    ],
+    [
+      "size",
+      541
+    ],
+    [
+      "buy",
+      536
+    ],
+    [
+      "using",
+      535
+    ],
+    [
+      "back",
+      519
+    ],
+    [
+      "made",
+      495
+    ],
+    [
+      "way",
+      494
+    ],
+    [
+      "recommend",
+      479
+    ],
+    [
+      "got",
+      476
+    ],
+    [
+      "make",
+      457
+    ],
+    [
+      "old",
+      441
+    ],
+    [
+      "see",
+      439
+    ],
+    [
+      "two",
+      438
+    ],
+    [
+      "case",
+      436
+    ],
+    [
+      "need",
+      435
+    ],
+    [
+      "bought",
+      433
+    ],
+    [
+      "could",
+      418
+    ],
+    [
+      "think",
+      415
+    ],
+    [
+      "purchased",
+      413
+    ],
+    [
+      "first",
+      410
+    ],
+    [
+      "dog",
+      401
+    ],
+    [
+      "set",
+      396
+    ],
+    [
+      "still",
+      393
+    ],
+    [
+      "works",
+      392
+    ],
+    [
+      "keep",
+      392
+    ],
+    [
+      "update",
+      386
+    ],
+    [
+      "look",
+      381
+    ],
+    [
+      "seem",
+      379
+    ],
+    [
+      "better",
+      374
+    ],
+    [
+      "year",
+      369
+    ],
+    [
+      "info",
+      369
+    ],
+    [
+      "looking",
+      364
+    ],
+    [
+      "price",
+      349
+    ],
+    [
+      "around",
+      342
+    ],
+    [
+      "sure",
+      336
+    ],
+    [
+      "skin",
+      333
+    ],
+    [
+      "top",
+      333
+    ],
+    [
+      "long",
+      329
+    ],
+    [
+      "color",
+      328
+    ],
+    [
+      "worth",
+      325
+    ],
+    [
+      "bit",
+      322
+    ],
+    [
+      "them.",
+      318
+    ],
+    [
+      "hair",
+      318
+    ],
+    [
+      "right",
+      317
+    ],
+    [
+      "loves",
+      317
+    ],
+    [
+      "tried",
+      316
+    ],
+    [
+      "enough",
+      316
+    ],
+    [
+      "looks",
+      311
+    ],
+    [
+      "try",
+      309
+    ],
+    [
+      "light",
+      305
+    ],
+    [
+      "hold",
+      304
+    ],
+    [
+      "super",
+      302
+    ],
+    [
+      "thought",
+      301
+    ],
+    [
+      "last",
+      299
+    ],
+    [
+      "going",
+      299
+    ],
+    [
+      "Good",
+      297
+    ],
+    [
+      "money",
+      296
+    ],
+    [
+      "ordered",
+      294
+    ],
+    [
+      "Nice",
+      290
+    ],
+    [
+      "hard",
+      287
+    ],
+    [
+      "different",
+      285
+    ],
+    [
+      "take",
+      284
+    ],
+    [
+      "give",
+      283
+    ],
+    [
+      "want",
+      281
+    ],
+    [
+      "pretty",
+      280
+    ],
+    [
+      "every",
+      279
+    ],
+    [
+      "another",
+      278
+    ],
+    [
+      "say",
+      276
+    ],
+    [
+      "hesitate",
+      276
+    ],
+    [
+      "well.",
+      275
+    ],
+    [
+      "perfect",
+      274
+    ],
+    [
+      "plastic",
+      274
+    ],
+    [
+      "said",
+      271
+    ],
+    [
+      "know",
+      267
+    ],
+    [
+      "something",
+      266
+    ],
+    [
+      "big",
+      264
+    ],
+    [
+      "come",
+      261
+    ],
+    [
+      "able",
+      260
+    ],
+    [
+      "it,",
+      260
+    ],
+    [
+      "makes",
+      258
+    ],
+    [
+      "Stars",
+      257
+    ],
+    [
+      "gift",
+      257
+    ],
+    [
+      "came",
+      255
+    ],
+    [
+      "lot",
+      254
+    ],
+    [
+      "waste",
+      253
+    ],
+    [
+      "/>I",
+      248
+    ],
+    [
+      "find",
+      245
+    ],
+    [
+      "return",
+      245
+    ],
+    [
+      "useful.",
+      245
+    ],
+    [
+      "large",
+      244
+    ]
+  ],
+  "tfidf_features": [
+    "br",
+    "did",
+    "don",
+    "easy",
+    "fit",
+    "good",
+    "great",
+    "just",
+    "like",
+    "little",
+    "love",
+    "nice",
+    "phone",
+    "product",
+    "quality",
+    "really",
+    "small",
+    "time",
+    "use",
+    "work"
+  ],
+  "lr": {
+    "accuracy": 0.8997,
+    "precision": 0.8999,
+    "recall": 0.8997,
+    "f1": 0.8997,
+    "report": {
+      "Negative (0)": {
+        "precision": 0.89,
+        "recall": 0.91,
+        "f1-score": 0.9,
+        "support": 798
+      },
+      "Positive (1)": {
+        "precision": 0.91,
+        "recall": 0.89,
+        "f1-score": 0.9,
+        "support": 797
+      }
+    },
+    "train_size": 6379,
+    "test_size": 1595
+  },
+  "distilbert": {
+    "accuracy": 0.9398,
+    "f1": 0.9398,
+    "report": {
+      "Negative": {
+        "precision": 0.95,
+        "recall": 0.93,
+        "f1-score": 0.94,
+        "support": 813
+      },
+      "Positive": {
+        "precision": 0.93,
+        "recall": 0.95,
+        "f1-score": 0.94,
+        "support": 782
+      }
+    },
+    "confusion": [
+      [
+        754,
+        59
+      ],
+      [
+        37,
+        745
+      ]
+    ],
+    "correct": 1499,
+    "misclassified": 96,
+    "test_size": 1595
+  }
+}
