@@ -4,8 +4,11 @@ An interactive [Streamlit](https://streamlit.io) app that presents the results o
 ADS-509 Applied Text Mining final project:
 **Comparing Traditional NLP and Transformer-Based Models for Review Sentiment Classification.**
 
+> **Live app:** https://ads509projectresultsteamgroup4.streamlit.app
 > **Team:** Gagandeep Singh · Shivam Patel · Luigi Salemi
 > **Course:** ADS-509 Applied Text Mining — University of San Diego
+
+Dark UI using BlueprintJS v6 colors (gray base, blue primary) with Lucide icons.
 
 ## What it shows
 
