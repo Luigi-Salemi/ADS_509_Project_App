@@ -60,7 +60,8 @@ LABEL_BALANCE = {"Positive (1)": 3250, "Negative (0)": 3250}
 BALANCED_TOTAL = 6500
 TRAIN_SIZE = 5200
 TEST_SIZE = 1300
-DUPLICATE_REVIEWS = 417   # detected and accounted for
+UNIQUE_REVIEWS = 6095     # executed notebook (cell 27)
+DUPLICATE_REVIEWS = 405   # executed notebook (cell 27)
 
 # four-stage preprocessing pipeline (mirrors the presentation)
 PIPELINE_STEPS = [
@@ -70,8 +71,8 @@ PIPELINE_STEPS = [
     ("Balance & Split", "6,500 balanced samples, stratified 80/20 split"),
 ]
 
-# average review length (words) by sentiment label
-AVG_REVIEW_LENGTH = {"Negative (0)": 32.5, "Positive (1)": 10.8}
+# average review length (words) by sentiment label — executed notebook (cell 13)
+AVG_REVIEW_LENGTH = {"Negative (0)": 32.7, "Positive (1)": 10.9}
 
 # ----------------------------------------------------------------------
 # Word frequency analysis  (top 20, stopwords removed)
@@ -99,11 +100,13 @@ TFIDF_DISCRIMINATIVE = ["slow", "delivery", "search", "items"]
 # TfidfVectorizer max_features=5000, LogisticRegression max_iter=1000
 # Stratified 80/20 split -> 5,200 train / 1,300 test
 # ======================================================================
+# executed notebook (cell 25): Accuracy 0.9092, Precision 0.9138,
+# Recall 0.9092, F1 0.909
 LR_METRICS = {
-    "Accuracy": 0.912,
-    "Precision (weighted)": 0.916,
-    "Recall (weighted)": 0.912,
-    "F1 (weighted)": 0.912,
+    "Accuracy": 0.9092,
+    "Precision (weighted)": 0.9138,
+    "Recall (weighted)": 0.9092,
+    "F1 (weighted)": 0.909,
 }
 # per-class classification report (from the executed notebook run; rounds to
 # the 0.91 figures reported on the baseline slide)
@@ -134,7 +137,15 @@ DISTILBERT_WORKFLOW = [
     ("Fine-Tune", "1 epoch, AdamW optimizer, learning rate 2e-5, batch size 8"),
     ("Evaluate", "Accuracy and F1 computed on the held-out 1,300 test reviews"),
 ]
+# NOTE: from the team's final presentation. The saved notebook run did NOT log
+# this score (its training cell was interrupted), so unlike every other figure
+# in this file it is not reproducible from the saved notebook.
 DISTILBERT_METRICS = {"Accuracy": 0.946, "F1 (weighted)": 0.946}
+DISTILBERT_SOURCE_NOTE = (
+    "From the team's final presentation. The saved notebook run did not log this "
+    "score (the training cell was interrupted), so it is the one figure here not "
+    "reproduced from the executed notebook."
+)
 DISTILBERT_REPORT = {
     "Negative": {"precision": 0.93, "recall": 0.96, "f1": 0.95, "support": 625},
     "Positive": {"precision": 0.96, "recall": 0.93, "f1": 0.95, "support": 675},
@@ -158,13 +169,49 @@ MODEL_COMPARISON = [
      "Accuracy": DISTILBERT_METRICS["Accuracy"],
      "F1 (weighted)": DISTILBERT_METRICS["F1 (weighted)"]},
 ]
-IMPROVEMENT_POINTS = 3.5   # DistilBERT over the baseline, in percentage points
+# gap computed live in the app from the figures above; the presentation
+# reported ~3.5 points (using its own slightly different baseline run).
+PRESENTATION_GAIN = 3.5
+
+# ----------------------------------------------------------------------
+# Data provenance / cross-check  (executed notebook vs final presentation)
+# ----------------------------------------------------------------------
+PROVENANCE = (
+    "Reproducible figures — the dataset stats, EDA, word frequency, TF-IDF, and "
+    "the Logistic Regression baseline — are taken from the executed notebook. "
+    "DistilBERT's score was not captured in the saved notebook run (its training "
+    "cell was interrupted), so it comes from the team's final presentation. "
+    "Because the notebook scrapes Google Play live, the presentation's later run "
+    "differs slightly from the saved run; the table below shows both."
+)
+# rows: (metric, executed notebook, final presentation)
+CROSSCHECK = [
+    ("Raw reviews scraped", "10,000", "10,000"),
+    ("Balanced sample", "6,500 (3,250 / 3,250)", "6,500"),
+    ("Avg words — negative", "32.7", "32.5"),
+    ("Avg words — positive", "10.9", "10.8"),
+    ("Duplicate reviews", "405", "417"),
+    ("LR accuracy", "90.9%", "91.2%"),
+    ("LR weighted F1", "90.9%", "91.2%"),
+    ("DistilBERT accuracy", "not captured", "94.6%"),
+    ("DistilBERT weighted F1", "not captured", "94.6%"),
+]
+
+# ----------------------------------------------------------------------
+# Live-demo example reviews (product reviews — match the bundled corpus)
+# ----------------------------------------------------------------------
+EXAMPLE_REVIEWS = {
+    "Negative · blender": "This blender broke after just two weeks. The plastic feels cheap and the motor started smelling like it was burning.",
+    "Positive · headphones": "These wireless headphones are amazing — crystal-clear sound, super comfortable, and the battery easily lasts all day.",
+    "Mixed · coffee maker": "The coffee maker brews fine, but the carafe drips every time I pour and the lid feels flimsy.",
+}
+DEFAULT_EXAMPLE = "Negative · blender"
 
 # ----------------------------------------------------------------------
 # Conclusions  (mirrors the presentation)
 # ----------------------------------------------------------------------
 KEY_TAKEAWAYS = [
-    "DistilBERT outperformed TF-IDF + Logistic Regression by ~3.5 points on both accuracy and F1.",
+    "DistilBERT outperformed the TF-IDF + Logistic Regression baseline on both accuracy and F1.",
     "Contextual embeddings capture nuance that bag-of-words models miss.",
     "Generative AI tools accelerated code generation and pipeline setup.",
     "A balanced, real-world dataset ensured reliable, unbiased evaluation.",

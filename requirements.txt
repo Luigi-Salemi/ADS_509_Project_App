@@ -1,5 +1,6 @@
-# Core dashboard (lightweight — always works on Streamlit Community Cloud)
-streamlit>=1.30
+# Core dashboard — needs Streamlit 1.41+ for st.navigation, @st.fragment,
+# st.pills, st.badge, and width="stretch"
+streamlit>=1.41
 pandas>=2.0
 plotly>=5.18
 scikit-learn>=1.3

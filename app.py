@@ -3,10 +3,11 @@ ADS-509 Final Project — Results Dashboard
 =========================================
 Interactive Streamlit app presenting the results of
 "Traditional NLP vs. Transformers for Sentiment Classification"
-(team notebook `ADS_509_Final_Team_Project_.ipynb`), plus a live demo that
-lets a visitor classify their own review with both model families.
+(team notebook `ADS_509_Final_Team_Project_.ipynb`), plus a live demo.
 
 Dark theme using BlueprintJS v6 colors (gray base, blue primary) + Lucide icons.
+Uses Streamlit 1.4x+ features: st.navigation/st.Page, @st.fragment, st.pills,
+st.popover, st.badge, and width="stretch".
 
 Run locally:   streamlit run app.py
 """
@@ -23,28 +24,29 @@ import results as R
 # ----------------------------------------------------------------------
 # BlueprintJS v6 palette (dark)
 # ----------------------------------------------------------------------
-BG       = "#1C2127"   # DarkGray1 — app background
-PANEL    = "#252A31"   # DarkGray2 — card / panel
-ELEV     = "#2F343C"   # DarkGray3 — elevated
-BORDER   = "#383E47"   # DarkGray4
-BORDER2  = "#404854"   # DarkGray5
-TEXT     = "#F6F7F9"   # LightGray5
-SUBTLE   = "#ABB3BF"   # Gray4
-MUTE     = "#738091"   # Gray2
-PRIMARY  = "#4C90F0"   # Blue4
-PRIMARY2 = "#8ABBFF"   # Blue5
-GOLD     = "#F0B726"   # Gold4
-POS      = "#32A467"   # Green4
-NEG      = "#E76A6E"   # Red4
-NEU      = "#8F99A8"   # Gray3
+BG       = "#1C2127"
+PANEL    = "#252A31"
+ELEV     = "#2F343C"
+BORDER   = "#383E47"
+BORDER2  = "#404854"
+TEXT     = "#F6F7F9"
+SUBTLE   = "#ABB3BF"
+MUTE     = "#738091"
+PRIMARY  = "#4C90F0"
+PRIMARY2 = "#8ABBFF"
+GOLD     = "#F0B726"
+POS      = "#32A467"
+NEG      = "#E76A6E"
+NEU      = "#8F99A8"
 
 st.set_page_config(
     page_title="ADS-509 — Sentiment Model Comparison",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded",
+    page_icon="📊", layout="wide", initial_sidebar_state="expanded",
 )
 pio.templates.default = "plotly_dark"
+
+# DistilBERT accuracy gain over the baseline, computed from the figures
+GAIN = round((R.DISTILBERT_METRICS["Accuracy"] - R.LR_METRICS["Accuracy"]) * 100, 1)
 
 # ----------------------------------------------------------------------
 # Lucide icons (inline SVG, MIT licensed)
@@ -65,9 +67,11 @@ _ICONS = {
     "check": '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
     "list": '<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>',
     "alert": '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    "info": '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
     "thumbsUp": '<path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>',
     "thumbsDown": '<path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/>',
     "layers": '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>',
+    "factcheck": '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
 }
 
 
@@ -89,26 +93,21 @@ st.markdown(
       .stApp {{ background:{BG}; }}
       .main .block-container {{ padding-top: 2rem; max-width: 1180px; }}
       h1, h2, h3, h4 {{ color:{TEXT}; }}
-      .metric-card {{
-        background:{PANEL}; border:1px solid {BORDER}; border-left:5px solid {PRIMARY};
-        border-radius:10px; padding:16px 18px;
-      }}
+      .metric-card {{ background:{PANEL}; border:1px solid {BORDER}; border-left:5px solid {PRIMARY};
+        border-radius:10px; padding:16px 18px; }}
       .metric-card .v {{ font-size:30px; font-weight:700; line-height:1.1; }}
       .metric-card .l {{ font-size:12px; color:{SUBTLE}; text-transform:uppercase; letter-spacing:.05em; margin-top:4px; }}
-      .tag {{
-        display:inline-block; background:{PRIMARY}1f; color:{PRIMARY2}; border:1px solid {PRIMARY}55;
-        border-radius:999px; padding:4px 12px; margin:4px 6px 4px 0; font-size:13px; font-weight:600;
-      }}
+      .tag {{ display:inline-block; background:{PRIMARY}1f; color:{PRIMARY2}; border:1px solid {PRIMARY}55;
+        border-radius:999px; padding:4px 12px; margin:4px 6px 4px 0; font-size:13px; font-weight:600; }}
       .tag.hot {{ background:{GOLD}1f; color:{GOLD}; border-color:{GOLD}66; }}
       .note {{ color:{SUBTLE}; font-size:13px; }}
       .pipe {{ background:{PANEL}; border:1px solid {BORDER}; border-radius:12px; padding:14px; text-align:center; height:150px; }}
       .pipe-n {{ display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px;
-                 border-radius:50%; background:{PRIMARY}; color:{BG}; font-weight:700; margin-bottom:8px; }}
+        border-radius:50%; background:{PRIMARY}; color:{BG}; font-weight:700; margin-bottom:8px; }}
       .pipe-t {{ font-weight:700; color:{TEXT}; font-size:15px; }}
       .pipe-d {{ font-size:12px; color:{SUBTLE}; margin-top:6px; }}
-      .pipe-arrow {{ color:{GOLD}; text-align:center; padding-top:54px; }}
       .step {{ border:1px solid {BORDER}; border-left:4px solid {PRIMARY}; background:{PANEL};
-               border-radius:0 10px 10px 0; padding:12px 16px; margin-bottom:10px; }}
+        border-radius:0 10px 10px 0; padding:12px 16px; margin-bottom:10px; }}
       .step b {{ color:{TEXT}; }}
       section[data-testid="stSidebar"] {{ border-right:1px solid {BORDER}; }}
     </style>
@@ -199,40 +198,10 @@ def result_badge(is_pos, conf, caption):
     )
 
 
-# ----------------------------------------------------------------------
-# Sidebar navigation
-# ----------------------------------------------------------------------
-NAV = [
-    ("Overview", "home"), ("Dataset", "database"), ("Exploratory Analysis", "search"),
-    ("TF-IDF Features", "calculator"), ("Model Results", "bot"),
-    ("Model Comparison", "scale"), ("Conclusion", "flag"), ("Try it Live", "flask"),
-]
-
-with st.sidebar:
-    st.markdown(
-        f"<div style='display:flex; align-items:center; gap:6px; font-size:18px; font-weight:700; color:{TEXT}'>"
-        f"{icon('chart', 22, PRIMARY)}ADS-509 Final Project</div>",
-        unsafe_allow_html=True,
-    )
-    st.caption(R.PROJECT["course"] + " · " + R.PROJECT["school"])
-    section = st.radio("Navigate", [n for n, _ in NAV], label_visibility="collapsed")
-    st.divider()
-    st.markdown(f"{icon('users', 16, SUBTLE, 2, 6)}<b style='color:{TEXT}'>Team</b>",
-                unsafe_allow_html=True)
-    for m in R.PROJECT["team"]:
-        st.caption("• " + m)
-    st.divider()
-    st.caption(
-        "Results are the team's finalized figures (project presentation), "
-        "cross-checked against the executed notebook. The notebook scrapes "
-        "live data, so each run varies slightly."
-    )
-
-
 # ======================================================================
-# OVERVIEW
+# PAGES
 # ======================================================================
-if section == "Overview":
+def page_overview():
     st.markdown(f"<h1 style='line-height:1.15'>{R.PROJECT['title']}</h1>", unsafe_allow_html=True)
     st.markdown(f"**{R.PROJECT['course']} · {R.PROJECT['school']}**")
     st.markdown("##### " + " · ".join(R.PROJECT["team"]))
@@ -263,15 +232,19 @@ if section == "Overview":
                 unsafe_allow_html=True,
             )
 
+    st.write("")
+    with st.popover("Data provenance & cross-check", icon=":material/fact_check:"):
+        st.markdown("**Executed notebook vs. final presentation**")
+        cc = pd.DataFrame(R.CROSSCHECK, columns=["Figure", "Executed notebook", "Presentation"])
+        st.dataframe(cc, width="stretch", hide_index=True)
+        st.caption(R.PROVENANCE)
 
-# ======================================================================
-# DATASET
-# ======================================================================
-elif section == "Dataset":
+
+def page_dataset():
     header("database", "Dataset")
     st.caption(
-        f"{R.RAW_REVIEW_COUNT:,} reviews ({R.REVIEWS_PER_APP:,} per app) scraped "
-        f"from the {R.SOURCE_PLATFORM} via {R.SCRAPER_LIB}: " + ", ".join(R.SOURCE_APPS)
+        f"{R.RAW_REVIEW_COUNT:,} reviews ({R.REVIEWS_PER_APP:,} per app) scraped from the "
+        f"{R.SOURCE_PLATFORM} via {R.SCRAPER_LIB}: " + ", ".join(R.SOURCE_APPS)
     )
 
     left, right = st.columns([3, 2])
@@ -283,21 +256,21 @@ elif section == "Dataset":
         fig = px.bar(rd, x="Stars", y="Reviews", text="Reviews")
         fig.update_traces(marker_color=rd["color"], textposition="outside", textfont_color=TEXT)
         fig.update_layout(xaxis_title="Star rating", yaxis_title="Reviews", showlegend=False)
-        st.plotly_chart(style_fig(fig, 360), use_container_width=True)
+        st.plotly_chart(style_fig(fig, 360), width="stretch")
     with right:
         st.subheader("Balanced sample")
-        lb = pd.DataFrame({"Label": list(R.LABEL_BALANCE.keys()),
-                           "Reviews": list(R.LABEL_BALANCE.values())})
-        fig2 = px.pie(lb, names="Label", values="Reviews", hole=0.55, color="Label",
-                      color_discrete_map={"Positive (1)": POS, "Negative (0)": NEG})
-        fig2.update_traces(textfont_color=TEXT)
+        labels = list(R.LABEL_BALANCE.keys())
+        fig2 = go.Figure(go.Pie(
+            labels=labels, values=list(R.LABEL_BALANCE.values()), hole=0.55,
+            marker=dict(colors=[POS if "Positive" in l else NEG for l in labels]),
+            textfont=dict(color=TEXT)))
         fig2.update_layout(legend=dict(orientation="h", y=-0.1))
-        st.plotly_chart(style_fig(fig2, 280), use_container_width=True)
+        st.plotly_chart(style_fig(fig2, 280), width="stretch")
         c1, c2 = st.columns(2)
         with c1:
-            card(f"{R.BALANCED_TOTAL:,}", "Total samples", PRIMARY, "layers")
+            card(f"{R.UNIQUE_REVIEWS:,}", "Unique reviews", PRIMARY, "layers")
         with c2:
-            card(f"{R.DUPLICATE_REVIEWS:,}", "Duplicates handled", PRIMARY, "list")
+            card(f"{R.DUPLICATE_REVIEWS:,}", "Duplicates", PRIMARY, "list")
 
     st.divider()
     st.subheader("Text preprocessing pipeline")
@@ -323,20 +296,17 @@ elif section == "Dataset":
     )
 
 
-# ======================================================================
-# EDA
-# ======================================================================
-elif section == "Exploratory Analysis":
+def page_eda():
     header("search", "Exploratory Analysis")
-
     st.subheader("Average review length by sentiment")
-    al = pd.DataFrame({"Sentiment": list(R.AVG_REVIEW_LENGTH.keys()),
-                       "Avg words": [round(v, 1) for v in R.AVG_REVIEW_LENGTH.values()]})
-    figl = px.bar(al, x="Sentiment", y="Avg words", text="Avg words", color="Sentiment",
-                  color_discrete_map={"Positive (1)": POS, "Negative (0)": NEG})
-    figl.update_traces(textposition="outside", textfont_color=TEXT)
+    sent = list(R.AVG_REVIEW_LENGTH.keys())
+    vals = [round(v, 1) for v in R.AVG_REVIEW_LENGTH.values()]
+    figl = go.Figure(go.Bar(
+        x=sent, y=vals, text=vals, textposition="outside",
+        marker_color=[NEG if "Negative" in s else POS for s in sent],
+        textfont=dict(color=TEXT)))
     figl.update_layout(showlegend=False, yaxis_title="Average words per review")
-    st.plotly_chart(style_fig(figl, 330), use_container_width=True)
+    st.plotly_chart(style_fig(figl, 330), width="stretch")
     neg = R.AVG_REVIEW_LENGTH["Negative (0)"]
     pos = R.AVG_REVIEW_LENGTH["Positive (1)"]
     panel("alert",
@@ -350,23 +320,20 @@ elif section == "Exploratory Analysis":
     figw = px.bar(tw, x="Frequency", y="Word", orientation="h", text="Frequency")
     figw.update_traces(marker_color=PRIMARY, textposition="outside", textfont_color=SUBTLE)
     figw.update_layout(yaxis_title="", xaxis_title="Frequency (stopwords removed)")
-    st.plotly_chart(style_fig(figw, 560), use_container_width=True)
+    st.plotly_chart(style_fig(figw, 560), width="stretch")
 
     wc_path = os.path.join(os.path.dirname(__file__), "assets", "wordcloud.png")
     if os.path.exists(wc_path):
         st.subheader("Word cloud of reviews")
-        st.image(wc_path, use_container_width=True)
+        st.image(wc_path, width="stretch")
 
 
-# ======================================================================
-# TF-IDF
-# ======================================================================
-elif section == "TF-IDF Features":
+def page_tfidf():
     header("calculator", "TF-IDF Feature Analysis")
     st.write(
-        "TF-IDF (Term Frequency–Inverse Document Frequency) highlights words distinctive "
-        "to reviews while down-weighting words that appear everywhere. Terms shaded gold "
-        "were especially discriminative between positive and negative reviews."
+        "TF-IDF (Term Frequency–Inverse Document Frequency) highlights words distinctive to "
+        "reviews while down-weighting words that appear everywhere. Terms shaded gold were "
+        "especially discriminative between positive and negative reviews."
     )
     st.subheader("Top TF-IDF terms")
     chips = []
@@ -382,10 +349,7 @@ elif section == "TF-IDF Features":
           "classifier can exploit.")
 
 
-# ======================================================================
-# MODEL RESULTS
-# ======================================================================
-elif section == "Model Results":
+def page_models():
     header("bot", "Model Results")
     tab1, tab2 = st.tabs(["TF-IDF + Logistic Regression", "Fine-Tuned DistilBERT"])
 
@@ -399,7 +363,7 @@ elif section == "Model Results":
         c1, c2 = st.columns([3, 2])
         with c1:
             st.markdown("**Classification report**")
-            st.dataframe(report_table(R.LR_REPORT), use_container_width=True)
+            st.dataframe(report_table(R.LR_REPORT), width="stretch")
         with c2:
             st.markdown("**Approach**")
             st.markdown(
@@ -410,7 +374,9 @@ elif section == "Model Results":
             )
 
     with tab2:
-        st.subheader("Transformer — Fine-Tuned DistilBERT")
+        c = st.container()
+        c.subheader("Transformer — Fine-Tuned DistilBERT")
+        st.badge("Best model", color="green", icon=":material/trophy:")
         cols = st.columns(2 + len(R.DISTILBERT_METRICS))
         with cols[0]:
             card(f"{R.DISTILBERT_CORRECT:,}", "Correct / 1,300", GOLD, "check", highlight=True)
@@ -419,8 +385,8 @@ elif section == "Model Results":
         for col, (k, v) in zip(cols[2:], R.DISTILBERT_METRICS.items()):
             with col:
                 card(pct(v), k, GOLD, highlight=True)
+        panel("info", R.DISTILBERT_SOURCE_NOTE, PRIMARY)
 
-        st.write("")
         st.markdown("**Fine-tuning workflow**")
         for i, (name, desc) in enumerate(R.DISTILBERT_WORKFLOW, 1):
             st.markdown(
@@ -432,10 +398,10 @@ elif section == "Model Results":
         c1, c2 = st.columns([3, 2])
         with c1:
             st.markdown("**Classification report**")
-            st.dataframe(report_table(R.DISTILBERT_REPORT), use_container_width=True)
+            st.dataframe(report_table(R.DISTILBERT_REPORT), width="stretch")
         with c2:
             st.markdown("**Confusion matrix**")
-            st.plotly_chart(confusion_fig(R.DISTILBERT_CONFUSION), use_container_width=True)
+            st.plotly_chart(confusion_fig(R.DISTILBERT_CONFUSION), width="stretch")
         panel("check",
               f"DistilBERT correctly classified <b>{R.DISTILBERT_CORRECT:,} of {R.TEST_SIZE:,}</b> "
               f"held-out reviews (<b>{pct(R.DISTILBERT_METRICS['Accuracy'])}</b> accuracy, "
@@ -444,32 +410,33 @@ elif section == "Model Results":
               POS)
 
 
-# ======================================================================
-# COMPARISON
-# ======================================================================
-elif section == "Model Comparison":
+def page_comparison():
     header("scale", "Model Comparison")
     st.caption("Classic NLP baseline vs. the fine-tuned transformer.")
-
     comp = pd.DataFrame(R.MODEL_COMPARISON)
     show = comp.copy()
     for c in ["Accuracy", "F1 (weighted)"]:
         show[c] = show[c].apply(pct)
-    st.dataframe(show, use_container_width=True, hide_index=True)
+    st.dataframe(show, width="stretch", hide_index=True)
 
-    plot_df = comp.melt(id_vars="Model", value_vars=["Accuracy", "F1 (weighted)"],
-                        var_name="Metric", value_name="Score")
-    figb = px.bar(plot_df, x="Model", y="Score", color="Metric", barmode="group",
-                  text=plot_df["Score"].apply(pct), color_discrete_sequence=[PRIMARY, GOLD])
-    figb.update_traces(textposition="outside", textfont_color=TEXT)
-    figb.update_layout(yaxis=dict(range=[0.8, 1.0], tickformat=".0%"), yaxis_title="Score")
-    st.plotly_chart(style_fig(figb, 420), use_container_width=True)
+    models = comp["Model"].tolist()
+    figb = go.Figure()
+    figb.add_bar(name="Accuracy", x=models, y=comp["Accuracy"], marker_color=PRIMARY,
+                 text=[pct(v) for v in comp["Accuracy"]], textposition="outside")
+    figb.add_bar(name="F1 (weighted)", x=models, y=comp["F1 (weighted)"], marker_color=GOLD,
+                 text=[pct(v) for v in comp["F1 (weighted)"]], textposition="outside")
+    figb.update_traces(textfont_color=TEXT)
+    figb.update_layout(barmode="group", yaxis=dict(range=[0.8, 1.0], tickformat=".0%"),
+                       yaxis_title="Score")
+    st.plotly_chart(style_fig(figb, 420), width="stretch")
 
     panel("check",
-          f"<b>DistilBERT outperforms the baseline</b> by ~{R.IMPROVEMENT_POINTS} percentage "
-          f"points on both accuracy and F1 ({pct(R.LR_METRICS['Accuracy'])} → "
+          f"<b>DistilBERT outperforms the baseline</b> by ~{GAIN} percentage points on both "
+          f"accuracy and F1 ({pct(R.LR_METRICS['Accuracy'])} → "
           f"{pct(R.DISTILBERT_METRICS['Accuracy'])}). Contextual embeddings capture nuance "
-          "that the bag-of-words baseline misses.", POS)
+          f"that the bag-of-words baseline misses. <span style='color:{MUTE}'>(The team's "
+          f"presentation reports ~{R.PRESENTATION_GAIN} pts using its own baseline run.)</span>",
+          POS)
 
     st.subheader("DistilBERT — per-class performance")
     cc = st.columns(2)
@@ -483,10 +450,7 @@ elif section == "Model Comparison":
             )
 
 
-# ======================================================================
-# CONCLUSION
-# ======================================================================
-elif section == "Conclusion":
+def page_conclusion():
     header("flag", "Results, Limitations & Next Steps")
     c1, c2 = st.columns(2)
     with c1:
@@ -506,57 +470,55 @@ elif section == "Conclusion":
     with b:
         card(pct(R.DISTILBERT_METRICS["Accuracy"]), "DistilBERT accuracy", GOLD, "bot", highlight=True)
     with c:
-        card(f"+{R.IMPROVEMENT_POINTS} pts", "Transformer gain", GOLD, "scale", highlight=True)
+        card(f"+{GAIN} pts", "Transformer gain", GOLD, "scale", highlight=True)
 
 
-# ======================================================================
-# LIVE DEMO
-# ======================================================================
-elif section == "Try it Live":
-    header("flask", "Try it Live")
-    st.write(
-        "Type a product/app review and see how each model family classifies it — mirroring "
-        "the project's two approaches: a **classic** TF-IDF + Logistic Regression model and "
-        "a **transformer**."
-    )
-    panel("alert",
-          "The classic model is trained live on a bundled review corpus, and the transformer "
-          "is an off-the-shelf <i>pretrained</i> sentiment model "
-          "(<code>distilbert-base-uncased-finetuned-sst-2-english</code>) used for inference. "
-          "It is a hands-on demo of the two approaches; the project's own fine-tuned DistilBERT "
-          f"reached <b>{pct(R.DISTILBERT_METRICS['Accuracy'])} accuracy</b> on the task "
-          "(see Model Results).")
+# ---- live demo (uses @st.fragment so classifying reruns only this block) ----
+@st.cache_resource(show_spinner="Training the classic TF-IDF + Logistic Regression model…")
+def get_classic_model():
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.pipeline import Pipeline
+    path = os.path.join(os.path.dirname(__file__), "data", "product_reviews_dataset.csv")
+    df = pd.read_csv(path)
+    df = df[df["label"].isin([0, 1])].dropna(subset=["text"])
+    pipe = Pipeline([
+        ("tfidf", TfidfVectorizer(stop_words="english", max_features=5000)),
+        ("clf", LogisticRegression(max_iter=1000)),
+    ])
+    pipe.fit(df["text"].astype(str), df["label"].astype(int))
+    return pipe, len(df)
 
-    @st.cache_resource(show_spinner="Training the classic TF-IDF + Logistic Regression model…")
-    def get_classic_model():
-        from sklearn.feature_extraction.text import TfidfVectorizer
-        from sklearn.linear_model import LogisticRegression
-        from sklearn.pipeline import Pipeline
-        path = os.path.join(os.path.dirname(__file__), "data", "product_reviews_dataset.csv")
-        df = pd.read_csv(path)
-        df = df[df["label"].isin([0, 1])].dropna(subset=["text"])
-        pipe = Pipeline([
-            ("tfidf", TfidfVectorizer(stop_words="english", max_features=5000)),
-            ("clf", LogisticRegression(max_iter=1000)),
-        ])
-        pipe.fit(df["text"].astype(str), df["label"].astype(int))
-        return pipe, len(df)
 
-    @st.cache_resource(show_spinner="Loading the pretrained transformer (first run downloads ~250 MB)…")
-    def get_transformer():
-        from transformers import pipeline
-        return pipeline("sentiment-analysis",
-                        model="distilbert-base-uncased-finetuned-sst-2-english")
+@st.cache_resource(show_spinner="Loading the pretrained transformer (first run downloads ~250 MB)…")
+def get_transformer():
+    from transformers import pipeline
+    return pipeline("sentiment-analysis",
+                    model="distilbert-base-uncased-finetuned-sst-2-english")
 
-    example = "The app keeps crashing every time I try to checkout. So frustrating."
-    text = st.text_area("Your review", value=example, height=110)
+
+@st.fragment
+def live_demo_runner():
+    if "review_text" not in st.session_state:
+        st.session_state["review_text"] = R.EXAMPLE_REVIEWS[R.DEFAULT_EXAMPLE]
+    pick = st.pills("Try an example product review", list(R.EXAMPLE_REVIEWS.keys()),
+                    selection_mode="single", default=None, key="ex_pick")
+    if pick and pick != st.session_state.get("_last_pick"):
+        st.session_state["review_text"] = R.EXAMPLE_REVIEWS[pick]
+        st.session_state["_last_pick"] = pick
+
+    st.text_area("Your review", key="review_text", height=110)
     run_tf = st.checkbox(
         "Also run the transformer (downloads & loads the model on first use)", value=False,
         help="Leave off for an instant classic-model result. Turn on to compare with a real "
              "transformer — slower on first click while it loads.",
     )
 
-    if st.button("Classify", type="primary") and text.strip():
+    if st.button("Classify", type="primary"):
+        text = st.session_state["review_text"]
+        if not text.strip():
+            st.warning("Enter a review first.")
+            return
         col1, col2 = st.columns(2)
         with col1:
             st.markdown(f"{icon('calculator', 20, PRIMARY)}<b style='color:{TEXT}'>Classic · TF-IDF + LogReg</b>",
@@ -565,28 +527,87 @@ elif section == "Try it Live":
                 model, n = get_classic_model()
                 proba = model.predict_proba([text])[0]
                 pred = int(proba.argmax())
-                result_badge(pred == 1, proba[pred], f"Trained live on {n:,} bundled labeled reviews.")
+                result_badge(pred == 1, proba[pred], f"Trained live on {n:,} bundled product reviews.")
             except Exception as e:
                 panel("alert", f"Classic model unavailable: {e}", NEG)
         with col2:
             st.markdown(f"{icon('bot', 20, PRIMARY)}<b style='color:{TEXT}'>Transformer · DistilBERT (SST-2)</b>",
                         unsafe_allow_html=True)
             if not run_tf:
-                panel("alert", "Enable the checkbox above to run the transformer.")
+                panel("info", "Enable the checkbox above to run the transformer.")
             else:
                 try:
                     clf = get_transformer()
                     out = clf(text[:512])[0]
-                    pos = out["label"].upper() == "POSITIVE"
-                    result_badge(pos, out["score"],
+                    is_pos = out["label"].upper() == "POSITIVE"
+                    result_badge(is_pos, out["score"],
                                  "Pretrained distilbert-base-uncased-finetuned-sst-2-english.")
                 except Exception as e:
                     panel("alert",
                           f"Transformer couldn't load in this environment (often a memory "
                           f"limit on free hosting): {e}", NEG)
 
+
+def page_live():
+    header("flask", "Try it Live")
+    st.write(
+        "Type a product review and see how each model family classifies it — mirroring the "
+        "project's two approaches: a **classic** TF-IDF + Logistic Regression model and a "
+        "**transformer**."
+    )
+    with st.popover("Which models is this using?", icon=":material/help:"):
+        st.markdown(
+            "**This demo does _not_ load the team's fine-tuned DistilBERT weights.** "
+            "Those were trained inside the project notebook on Colab and never exported, "
+            "so they aren't stored in the app.\n\n"
+            "- **Classic** — a TF-IDF + Logistic Regression model trained *live* on a bundled "
+            "product-review corpus when you open this page.\n"
+            "- **Transformer** — an off-the-shelf *pretrained* sentiment model "
+            "(`distilbert-base-uncased-finetuned-sst-2-english`), used only for inference.\n\n"
+            f"The project's own fine-tuned DistilBERT scored **{pct(R.DISTILBERT_METRICS['Accuracy'])}** "
+            "on the task — see the **Model Results** page."
+        )
+    live_demo_runner()
     st.divider()
     st.caption(
         "Tip: try a long, detailed complaint vs. a short \"love it!\" — the EDA showed "
         "negative reviews tend to be much longer."
     )
+
+
+# ======================================================================
+# NAVIGATION (st.navigation / st.Page — modern multipage API)
+# ======================================================================
+PAGES = [
+    ("overview", "Overview", page_overview, True),
+    ("dataset", "Dataset", page_dataset, False),
+    ("eda", "Exploratory Analysis", page_eda, False),
+    ("tfidf", "TF-IDF Features", page_tfidf, False),
+    ("models", "Model Results", page_models, False),
+    ("comparison", "Model Comparison", page_comparison, False),
+    ("conclusion", "Conclusion", page_conclusion, False),
+    ("live", "Try it Live", page_live, False),
+]
+
+# smoke-test hook: APP_SMOKE=<url_path> runs a single page standalone (no nav)
+_smoke = os.environ.get("APP_SMOKE")
+if _smoke:
+    {u: f for u, _, f, _ in PAGES}[_smoke]()
+else:
+    nav = st.navigation(
+        [st.Page(f, title=t, url_path=u, default=d) for u, t, f, d in PAGES],
+        position="sidebar",
+    )
+    with st.sidebar:
+        st.markdown(
+            f"<div style='display:flex; align-items:center; gap:6px; font-size:16px; font-weight:700; "
+            f"color:{TEXT}; margin-bottom:2px'>{icon('chart', 20, PRIMARY)}ADS-509 Final Project</div>",
+            unsafe_allow_html=True,
+        )
+        st.caption(R.PROJECT["course"] + " · " + R.PROJECT["school"])
+        st.divider()
+        st.markdown(f"{icon('users', 16, SUBTLE, 2, 6)}<b style='color:{TEXT}'>Team</b>",
+                    unsafe_allow_html=True)
+        for m in R.PROJECT["team"]:
+            st.caption("• " + m)
+    nav.run()
