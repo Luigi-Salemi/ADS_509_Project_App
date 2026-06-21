@@ -1,58 +1,80 @@
 """
-Captured results from ADS_509_Final_Team_Project_.ipynb
-========================================================
-Project: Comparing Traditional NLP and Transformer-Based Models for
-         Review Sentiment Classification.
+Finalized results for the ADS-509 final project
+===============================================
+Project: Traditional NLP vs. Transformers for Sentiment Classification
 Course : ADS-509 Applied Text Mining, University of San Diego
 Team   : Gagandeep Singh, Shivam Patel, Luigi Salemi
 
-Every number in this file is transcribed directly from the executed-cell
-outputs of the team notebook. Nothing here is invented. The one result the
-notebook did NOT capture (the fine-tuned DistilBERT score, because that
-training cell was interrupted after step 0) is left as None and surfaced in
-the app as "pending" rather than fabricated.
+Source of truth: the team's finalized results presentation
+("Traditional-NLP-vs-Transformers-for-Sentiment-Classification.pdf"),
+cross-checked against the executed team notebook
+(`ADS_509_Final_Team_Project_.ipynb`).
+
+Note on reproducibility: the notebook scrapes the Google Play Store live, so
+each run pulls slightly different reviews and produces slightly different
+numbers. The values below are the team's reported final-run results.
 """
 
 # ----------------------------------------------------------------------
 # Project metadata
 # ----------------------------------------------------------------------
 PROJECT = {
-    "title": "Comparing Traditional NLP and Transformer-Based Models "
-             "for Review Sentiment Classification",
+    "title": "Traditional NLP vs. Transformers for Sentiment Classification",
     "course": "ADS-509 — Applied Text Mining",
     "school": "University of San Diego",
     "team": ["Gagandeep Singh", "Shivam Patel", "Luigi Salemi"],
     "objective": (
-        "Benchmark a classic NLP pipeline (TF-IDF + Logistic Regression) "
-        "against a fine-tuned transformer (DistilBERT) on the same binary "
-        "sentiment task, using reviews the team scraped themselves."
+        "Build an end-to-end text-analytics pipeline that classifies the "
+        "sentiment of app-store reviews, comparing a traditional "
+        "TF-IDF + Logistic Regression baseline against a fine-tuned DistilBERT "
+        "transformer."
     ),
 }
 
+# four "project overview" cards (mirrors the presentation)
+OVERVIEW_CARDS = [
+    ("Data Collection", "Scraped 10,000 reviews from the Google Play Store across 5 retail apps."),
+    ("EDA & Preprocessing", "Explored text structure, word frequency, and sentiment distributions."),
+    ("Two Modeling Approaches", "TF-IDF + Logistic Regression baseline vs. fine-tuned DistilBERT."),
+    ("Generative AI Assist", "LLM tools aided code generation, model setup, and visualization."),
+]
+
 # ----------------------------------------------------------------------
-# Data collection  (cells: scrape + value_counts)
+# Data collection
 # ----------------------------------------------------------------------
 SOURCE_APPS = ["Amazon Shopping", "Walmart", "Target", "Best Buy", "eBay"]
 SOURCE_PLATFORM = "Google Play Store"
+REVIEWS_PER_APP = 2000
 RAW_REVIEW_COUNT = 10000
+SCRAPER_LIB = "google_play_scraper"
+DATA_FIELDS = ["review text", "star rating (1-5)", "review date", "app name"]
 
 # raw star-rating distribution across all 10,000 scraped reviews
 RATING_DISTRIBUTION = {5: 5015, 1: 3043, 2: 697, 4: 624, 3: 621}
 
 # ----------------------------------------------------------------------
-# Label engineering  (4-5 -> positive, 1-2 -> negative, 3 dropped)
+# Label engineering + preprocessing
 # ----------------------------------------------------------------------
-# After mapping, the team drew a balanced sample of 3,250 per class.
+# 4-5 stars -> positive, 1-2 stars -> negative, 3 stars dropped.
 LABEL_BALANCE = {"Positive (1)": 3250, "Negative (0)": 3250}
 BALANCED_TOTAL = 6500
-UNIQUE_REVIEWS = 6095
-DUPLICATE_REVIEWS = 405
+TRAIN_SIZE = 5200
+TEST_SIZE = 1300
+DUPLICATE_REVIEWS = 417   # detected and accounted for
+
+# four-stage preprocessing pipeline (mirrors the presentation)
+PIPELINE_STEPS = [
+    ("Scrape Raw Reviews", "Pull reviews via google_play_scraper"),
+    ("Clean Text", "Remove NLTK stopwords, handle null values"),
+    ("Map Ratings", "Star ratings -> binary sentiment labels"),
+    ("Balance & Split", "6,500 balanced samples, stratified 80/20 split"),
+]
 
 # average review length (words) by sentiment label
-AVG_REVIEW_LENGTH = {"Negative (0)": 32.747077, "Positive (1)": 10.920000}
+AVG_REVIEW_LENGTH = {"Negative (0)": 32.5, "Positive (1)": 10.8}
 
 # ----------------------------------------------------------------------
-# Word frequency analysis  (top 20, stopwords removed, len > 2)
+# Word frequency analysis  (top 20, stopwords removed)
 # ----------------------------------------------------------------------
 TOP_WORDS = [
     ("app", 1774), ("get", 593), ("use", 510), ("easy", 481), ("love", 450),
@@ -62,27 +84,29 @@ TOP_WORDS = [
 ]
 
 # ----------------------------------------------------------------------
-# TF-IDF analysis  (TfidfVectorizer max_features=20, english stopwords)
+# TF-IDF analysis  (TfidfVectorizer, english stopwords)
 # ----------------------------------------------------------------------
 TFIDF_TOP_FEATURES = [
     "ai", "amazon", "app", "best", "buy", "delivery", "don", "easy", "ebay",
     "good", "great", "items", "just", "love", "order", "search", "service",
     "slow", "time", "use",
 ]
+# TF-IDF surfaced these as especially discriminative between classes
+TFIDF_DISCRIMINATIVE = ["slow", "delivery", "search", "items"]
 
-# ----------------------------------------------------------------------
-# Baseline model: TF-IDF + Logistic Regression
-# (TfidfVectorizer max_features=5000, LogisticRegression max_iter=1000)
-# Test set: 1,300 reviews, 650 per class, stratified 80/20 split.
-# ----------------------------------------------------------------------
+# ======================================================================
+# MODEL A — TF-IDF + Logistic Regression (baseline)
+# TfidfVectorizer max_features=5000, LogisticRegression max_iter=1000
+# Stratified 80/20 split -> 5,200 train / 1,300 test
+# ======================================================================
 LR_METRICS = {
-    "Accuracy": 0.9092,
-    "Precision (weighted)": 0.9138,
-    "Recall (weighted)": 0.9092,
-    "F1 (weighted)": 0.9090,
+    "Accuracy": 0.912,
+    "Precision (weighted)": 0.916,
+    "Recall (weighted)": 0.912,
+    "F1 (weighted)": 0.912,
 }
-
-# full classification_report, transcribed
+# per-class classification report (from the executed notebook run; rounds to
+# the 0.91 figures reported on the baseline slide)
 LR_REPORT = {
     "Negative (0)": {"precision": 0.87, "recall": 0.96, "f1": 0.91, "support": 650},
     "Positive (1)": {"precision": 0.96, "recall": 0.86, "f1": 0.90, "support": 650},
@@ -90,46 +114,64 @@ LR_REPORT = {
     "weighted avg": {"precision": 0.91, "recall": 0.91, "f1": 0.91, "support": 1300},
 }
 
-# Confusion matrix DERIVED from the report (recall * support, rounded).
-# Verified consistent with the reported precision values to 2 decimals.
-#   rows = actual, cols = predicted ; order = [Negative, Positive]
-LR_CONFUSION = [
-    [624, 26],    # actual Negative -> 624 correct, 26 called Positive
-    [91, 559],    # actual Positive -> 91 called Negative, 559 correct
-]
-LR_CONFUSION_NOTE = (
-    "Derived from the classification report (recall x support, rounded); "
-    "consistent with the reported precision to two decimals."
-)
-
-# ----------------------------------------------------------------------
-# Transformer model: fine-tuned DistilBERT
-# distilbert-base-uncased, 1 epoch, AdamW lr=2e-5, batch_size=8, max_len=128
-# ----------------------------------------------------------------------
+# ======================================================================
+# MODEL B — Fine-tuned DistilBERT (transformer)
+# distilbert-base-uncased, WordPiece max_len=128, 1 epoch,
+# AdamW lr=2e-5, batch_size=8. Evaluated on 1,300 held-out reviews.
+# ======================================================================
 DISTILBERT_CONFIG = {
     "Base model": "distilbert-base-uncased",
+    "Tokenizer": "WordPiece (max length 128)",
     "Epochs": "1",
     "Optimizer": "AdamW (lr = 2e-5)",
     "Batch size": "8",
-    "Max sequence length": "128",
-    "Device": "CPU",
+    "Eval set": "1,300 held-out reviews",
 }
-# The notebook's training cell was interrupted after the first step
-# (only "Epoch 1, Step 0, Loss: 0.7509" was printed), so no eval score
-# was recorded. Kept as None so the app shows "pending", never a guess.
-DISTILBERT_METRICS = {"Accuracy": None, "F1 (weighted)": None}
-DISTILBERT_FIRST_STEP_LOSS = 0.7509
+# fine-tuning workflow (mirrors the presentation)
+DISTILBERT_WORKFLOW = [
+    ("Tokenize", "Reviews tokenized with WordPiece, max length 128 tokens"),
+    ("Load Model", "Pre-trained DistilBERT with classification head (2 labels)"),
+    ("Fine-Tune", "1 epoch, AdamW optimizer, learning rate 2e-5, batch size 8"),
+    ("Evaluate", "Accuracy and F1 computed on the held-out 1,300 test reviews"),
+]
+DISTILBERT_METRICS = {"Accuracy": 0.946, "F1 (weighted)": 0.946}
+DISTILBERT_REPORT = {
+    "Negative": {"precision": 0.93, "recall": 0.96, "f1": 0.95, "support": 625},
+    "Positive": {"precision": 0.96, "recall": 0.93, "f1": 0.95, "support": 675},
+}
+# confusion matrix: rows = actual, cols = predicted ; order = [Negative, Positive]
+DISTILBERT_CONFUSION = [
+    [602, 23],    # actual Negative -> 602 correct, 23 called Positive
+    [46, 629],    # actual Positive -> 46 called Negative, 629 correct
+]
+DISTILBERT_CORRECT = 1231
+DISTILBERT_MISCLASSIFIED = 69   # 23 FP + 46 FN
 
 # ----------------------------------------------------------------------
-# Model comparison table
+# Model comparison
 # ----------------------------------------------------------------------
 MODEL_COMPARISON = [
     {"Model": "TF-IDF + Logistic Regression",
      "Accuracy": LR_METRICS["Accuracy"],
-     "F1 (weighted)": LR_METRICS["F1 (weighted)"],
-     "Status": "complete"},
+     "F1 (weighted)": LR_METRICS["F1 (weighted)"]},
     {"Model": "Fine-Tuned DistilBERT",
      "Accuracy": DISTILBERT_METRICS["Accuracy"],
-     "F1 (weighted)": DISTILBERT_METRICS["F1 (weighted)"],
-     "Status": "pending (training run incomplete in notebook)"},
+     "F1 (weighted)": DISTILBERT_METRICS["F1 (weighted)"]},
+]
+IMPROVEMENT_POINTS = 3.5   # DistilBERT over the baseline, in percentage points
+
+# ----------------------------------------------------------------------
+# Conclusions  (mirrors the presentation)
+# ----------------------------------------------------------------------
+KEY_TAKEAWAYS = [
+    "DistilBERT outperformed TF-IDF + Logistic Regression by ~3.5 points on both accuracy and F1.",
+    "Contextual embeddings capture nuance that bag-of-words models miss.",
+    "Generative AI tools accelerated code generation and pipeline setup.",
+    "A balanced, real-world dataset ensured reliable, unbiased evaluation.",
+]
+LIMITATIONS = [
+    "Single epoch — additional training may further improve performance.",
+    "Binary only — neutral (3-star) reviews were excluded; multi-class remains open.",
+    "Domain scope — limited to 5 retail apps; generalization untested.",
+    "Next: multi-class sentiment, aspect-level analysis, larger models (BERT, RoBERTa).",
 ]

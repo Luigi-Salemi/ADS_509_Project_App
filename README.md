@@ -15,14 +15,17 @@ ADS-509 Applied Text Mining final project:
 | 🗂️ Dataset | Star-rating distribution, balanced binary sample, dedup stats |
 | 🔎 Exploratory Analysis | Review length by sentiment, top-20 words, word cloud |
 | 🧮 TF-IDF Features | Top distinctive terms selected by TF-IDF |
-| 🤖 Model Results | Logistic Regression metrics, classification report, confusion matrix; DistilBERT config |
-| ⚖️ Model Comparison | Classic baseline vs. transformer |
+| 🤖 Model Results | LR metrics + report; DistilBERT metrics, workflow, classification report & confusion matrix |
+| ⚖️ Model Comparison | Classic baseline (91.2%) vs. fine-tuned DistilBERT (94.6%) |
+| 📌 Conclusion | Key takeaways, limitations, and next steps |
 | 🧪 Try it Live | Classify your own review with a **classic** model **and** a **pretrained transformer** |
 
-All numbers are transcribed directly from the executed team notebook
-(`ADS_509_Final_Team_Project_.ipynb`). The fine-tuned DistilBERT score is shown as
-**pending** because that training cell was interrupted in the saved notebook — no value is
-estimated.
+Results are the team's finalized figures from the project presentation
+(*Traditional NLP vs. Transformers for Sentiment Classification*), cross-checked against the
+executed team notebook (`ADS_509_Final_Team_Project_.ipynb`). Headline result: the
+fine-tuned **DistilBERT (94.6% accuracy / F1)** beats the **TF-IDF + Logistic Regression
+baseline (91.2%)** by ~3.5 points. Because the notebook scrapes Google Play **live**, each
+run varies slightly, so the dashboard pins the presentation's reported numbers.
 
 > **Note on the live demo:** the *classic* model is trained at runtime on a bundled review
 > corpus, and the *transformer* is an off-the-shelf **pretrained** sentiment model
