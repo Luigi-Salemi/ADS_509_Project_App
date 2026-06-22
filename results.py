@@ -12,7 +12,7 @@ Amazon Reviews 2023 (McAuley-Lab), ~10K reviews across 10 categories. No scrapin
 
 PROJECT = {
     "title": "Pre-trained LLM Text Analysis — Amazon Review Sentiment",
-    "course": "ADS-509 — Applied Text Mining · Option 1",
+    "course": "Applied Large Language Models for Data Science (ADS-509-01)",
     "school": "University of San Diego",
     "team": ["Gagandeep Singh", "Shivam Patel", "Luigi Salemi"],
     "objective": (
