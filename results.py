@@ -11,13 +11,15 @@ Amazon Reviews 2023 (McAuley-Lab), ~10K reviews across 10 categories. No scrapin
 """
 
 PROJECT = {
-    "title": "Traditional NLP vs. Transformers for Review Sentiment Classification",
-    "course": "ADS-509 — Applied Text Mining",
+    "title": "Pre-trained LLM Text Analysis — Amazon Review Sentiment",
+    "course": "ADS-509 — Applied Text Mining · Option 1",
     "school": "University of San Diego",
     "team": ["Gagandeep Singh", "Shivam Patel", "Luigi Salemi"],
     "objective": (
-        "Benchmark a classic NLP pipeline (TF-IDF + Logistic Regression) against a "
-        "fine-tuned transformer (DistilBERT) on real Amazon product reviews."
+        "A small-scale text-analytics pipeline on real Amazon reviews: EDA of text "
+        "structure, frequency, and sentiment distribution, then a fine-tuned open-source "
+        "LLM (DistilBERT) for sentiment classification — benchmarked against a TF-IDF + "
+        "Logistic Regression baseline, with generative-AI-assisted development."
     ),
 }
 
