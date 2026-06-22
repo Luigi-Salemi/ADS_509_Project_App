@@ -68,7 +68,8 @@ st.markdown(f"""
   .block-container {{ padding-top:1.6rem; max-width:1200px; }}
   h1,h2,h3,h4 {{ color:{TEXT}; }}
   .hero {{ background:linear-gradient(135deg,{PANEL} 0%,{ELEV} 100%); border:1px solid {BORDER}; border-radius:14px; padding:20px 24px; }}
-  .mcard {{ background:{PANEL}; border:1px solid {BORDER}; border-left:4px solid {PRIMARY}; border-radius:12px; padding:14px 16px; min-height:104px; height:100%; }}
+  .mcard {{ position:relative; background:{PANEL}; border:1px solid {BORDER}; border-left:4px solid {PRIMARY}; border-radius:12px; padding:14px 16px; height:116px; display:flex; flex-direction:column; justify-content:center; }}
+  .mcard .ic {{ position:absolute; top:13px; right:15px; opacity:.85; }}
   .mcard .v {{ font-size:25px; font-weight:750; line-height:1.1; color:{TEXT}; }}
   .mcard .l {{ font-size:11.5px; color:{SUBTLE}; text-transform:uppercase; letter-spacing:.05em; margin-top:3px; }}
   .mcard .d {{ font-size:12px; margin-top:5px; }}
@@ -94,7 +95,7 @@ def card(icon_name, value, label, accent=PRIMARY, delta=None):
         dc = POS if str(delta).startswith("+") else (NEG if str(delta).startswith("-") else SUBTLE)
         d = f"<div class='d' style='color:{dc}'>{delta}</div>"
     st.markdown(f"<div class='mcard' style='border-left-color:{accent}'>"
-                f"<div style='float:right;opacity:.85'>{icon(icon_name,20,accent,2,0)}</div>"
+                f"<div class='ic'>{icon(icon_name,20,accent,2,0)}</div>"
                 f"<div class='v'>{value}</div><div class='l'>{label}</div>{d}</div>", unsafe_allow_html=True)
 
 
@@ -225,7 +226,7 @@ with m[0]:
 with m[1]:
     card("layers", f"{len(R.CATEGORIES)}", "Retail apps", PRIMARY)
 with m[2]:
-    card("trophy", f"{R.DISTILBERT_METRICS['F1 (weighted)']*100:.1f}%", "DistilBERT · F1 (weighted)",
+    card("trophy", f"{R.DISTILBERT_METRICS['F1 (weighted)']*100:.1f}%", "DistilBERT F1",
          ACCENT, delta=f"+{GAIN} pts F1 vs baseline")
 with m[3]:
     card("scale", f"{R.BALANCED_TOTAL:,}", "Balanced sample", PRIMARY)
