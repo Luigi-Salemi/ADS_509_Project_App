@@ -239,13 +239,13 @@ if nav == "Data & EDA":
                f"(4-5 stars = positive, 1-2 stars = negative; 3-star reviews excluded).")
     d = st.columns(4)
     with d[0]:
-        card("database", f"{R.RAW_REVIEW_COUNT:,}", "Collected")
-    with d[1]:
-        card("scale", f"{R.BALANCED_TOTAL:,}", "Balanced set")
-    with d[2]:
         card("split", f"{R.TRAIN_SIZE:,} / {R.TEST_SIZE:,}", "Train / test")
+    with d[1]:
+        card("layers", f"{R.UNIQUE_REVIEWS:,}", "Unique reviews")
+    with d[2]:
+        card("list", f"{R.DUPLICATE_REVIEWS:,}", "Duplicates")
     with d[3]:
-        card("layers", f"{len(R.CATEGORIES)}", "Retail apps")
+        card("star", f"{R.RATING_DISTRIBUTION.get(3, 0):,}", "3-star (dropped)")
 
     st.write("")
     c1, c2 = st.columns(2)
