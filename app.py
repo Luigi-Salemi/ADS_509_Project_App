@@ -144,11 +144,11 @@ def _logo_uri(path):
 
 # brand-tinted bar fills (single colors are not protected; the disclaimer covers identification)
 APP_BAR = {
-    "Amazon Shopping": "#FF9900",
-    "Walmart": "#0071DC",
-    "Target": "#E0392B",
-    "Best Buy": "#FFD400",
-    "eBay": "linear-gradient(90deg,#E53238 0%,#0064D2 38%,#F5AF02 70%,#86B817 100%)",
+    "Amazon Shopping": "#F2C48C",
+    "Walmart": "#9BBAEE",
+    "Target": "#EC9A93",
+    "Best Buy": "#F2DD93",
+    "eBay": "linear-gradient(90deg,#EC9A93 0%,#9BBAEE 38%,#F2DD93 70%,#AED59A 100%)",
 }
 
 
