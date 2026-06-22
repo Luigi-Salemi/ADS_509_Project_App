@@ -1,8 +1,8 @@
 """
 Amazon Review Sentiment — interactive dashboard (Option 1)
 ==========================================================
-Traditional NLP vs. Transformers on real Amazon Reviews 2023 (McAuley-Lab),
-~10K reviews across 10 product categories. Sidebar nav sections, Lucide icons, dark theme.
+Traditional NLP vs. Transformers on real Google Play Store reviews,
+~10K reviews across 5 retail apps. Sidebar nav sections, Lucide icons, dark theme.
 The live demo runs the fine-tuned model in-process (pre-warmed in the background).
 
 Run:  streamlit run app.py
@@ -224,7 +224,7 @@ m = st.columns(4)
 with m[0]:
     card("database", f"{R.RAW_REVIEW_COUNT:,}", "Real reviews", PRIMARY)
 with m[1]:
-    card("layers", f"{len(R.CATEGORIES)}", "Product categories", PRIMARY)
+    card("layers", f"{len(R.CATEGORIES)}", "Retail apps", PRIMARY)
 with m[2]:
     card("trophy", f"{R.DISTILBERT_METRICS['F1 (weighted)']*100:.1f}%", "DistilBERT · F1 (weighted)",
          ACCENT, delta=f"+{GAIN} pts F1 vs baseline")
@@ -235,7 +235,7 @@ st.write("")
 
 # ====================================================================== DATA & EDA
 if nav == "Data & EDA":
-    st.caption(f"{R.RAW_REVIEW_COUNT:,} real reviews across {len(R.CATEGORIES)} product categories — "
+    st.caption(f"{R.RAW_REVIEW_COUNT:,} reviews across {len(R.CATEGORIES)} retail apps on the Google Play Store — "
                f"[{R.DATASET_NAME}]({R.DATASET_URL}). Labels come from each review's star rating "
                f"(4-5 stars = positive, 1-2 stars = negative; 3-star reviews excluded).")
     d = st.columns(4)
@@ -246,7 +246,7 @@ if nav == "Data & EDA":
     with d[2]:
         card("split", f"{R.TRAIN_SIZE:,} / {R.TEST_SIZE:,}", "Train / test")
     with d[3]:
-        card("layers", f"{len(R.CATEGORIES)}", "Categories")
+        card("layers", f"{len(R.CATEGORIES)}", "Retail apps")
 
     st.write("")
     c1, c2 = st.columns(2)
@@ -254,7 +254,7 @@ if nav == "Data & EDA":
         section("star", "Star-rating distribution")
         rd = pd.DataFrame({"Stars": list(R.RATING_DISTRIBUTION), "n": list(R.RATING_DISTRIBUTION.values())}).sort_values("Stars")
         fig = go.Figure(go.Bar(x=rd["Stars"].astype(str), y=rd["n"], text=rd["n"], textposition="outside",
-                               marker_color=[NEG if s <= 2 else POS for s in rd["Stars"]]))
+                               marker_color=[NEG if s <= 2 else (SUBTLE if s == 3 else POS) for s in rd["Stars"]]))
         fig.update_traces(textfont_color=TEXT)
         fig.update_layout(xaxis_title="Star rating (1-5)", yaxis_title="Reviews")
         st.plotly_chart(style(fig, 360), width="stretch")
@@ -268,13 +268,13 @@ if nav == "Data & EDA":
         fig.update_layout(yaxis_title="Reviews", xaxis_title="")
         st.plotly_chart(style(fig, 360), width="stretch")
 
-    section("layers", "Reviews by product category")
+    section("layers", "Reviews by retail app")
     st.plotly_chart(hbar(R.CATEGORY_DIST, PRIMARY, 380), width="stretch")
 
     st.divider()
     section("list", "Preprocessing pipeline")
-    steps = [("Load", "Amazon Reviews 2023 (McAuley-Lab)"),
-             ("Clean", "strip HTML, remove NLTK stopwords"),
+    steps = [("Scrape", "Google Play Store, 5 retail apps"),
+             ("Clean", "NLTK stopwords, handle null values"),
              ("Map ratings", "4-5 stars = positive (1), 1-2 stars = negative (0)"),
              ("Balance & split", f"{R.BALANCED_TOTAL:,} balanced, stratified 80/20")]
     sc = st.columns(4)
@@ -387,7 +387,7 @@ elif nav == "Try it Live":
         if pick and pick != st.session_state.get("_lp"):
             st.session_state["rev"] = ex[pick]
             st.session_state["_lp"] = pick
-        st.text_area("Your product review", key="rev", height=110)
+        st.text_area("Your app review", key="rev", height=110)
         run_tf = st.toggle("Also run the transformer (compare both)", value=False)
         if st.button("Classify", type="primary", icon=":material/play_arrow:"):
             txt = st.session_state["rev"]
