@@ -186,7 +186,12 @@ DISTILBERT_WORKFLOW = [
     ("Fine-Tune", "1 epoch, AdamW, lr 2e-5, batch size 8"),
     ("Evaluate", "Accuracy and F1 on the held-out test reviews"),
 ]
-DISTILBERT_METRICS = {"Accuracy": 0.9385, "F1 (weighted)": 0.9384}
+DISTILBERT_METRICS = {
+    "Accuracy": 0.9385,
+    "Precision (weighted)": 0.9387,
+    "Recall (weighted)": 0.9385,
+    "F1 (weighted)": 0.9384,
+}
 DISTILBERT_REPORT = {
     "Negative": {"precision": 0.95, "recall": 0.92, "f1": 0.94, "support": 625},
     "Positive": {"precision": 0.93, "recall": 0.95, "f1": 0.94, "support": 675},
