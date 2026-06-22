@@ -135,6 +135,35 @@ def hbar(d, color=PRIMARY, h=340, xtitle="Reviews"):
     return style(fig, h)
 
 
+@st.cache_data
+def _logo_uri(path):
+    import base64
+    with open(path, "rb") as f:
+        return "data:image/png;base64," + base64.b64encode(f.read()).decode()
+
+
+def app_bars(dist):
+    logo_dir = os.path.join(os.path.dirname(__file__), "assets", "apps")
+    mx = max(dist.values()) or 1
+    rows = ""
+    for app, cnt in sorted(dist.items(), key=lambda kv: -kv[1]):
+        p = os.path.join(logo_dir, f"{app}.png")
+        ic = (f"<img src='{_logo_uri(p)}' style='width:30px;height:30px;border-radius:7px;flex:0 0 auto'>"
+              if os.path.exists(p) else "<div style='width:30px;flex:0 0 auto'></div>")
+        pct = cnt / mx * 100
+        rows += (
+            f"<div style='display:flex;align-items:center;gap:13px;margin:9px 0'>{ic}"
+            f"<div style='width:128px;color:{TEXT};font-size:14px;flex:0 0 auto'>{app}</div>"
+            f"<div style='flex:1;background:{BORDER};border-radius:7px;height:20px;overflow:hidden'>"
+            f"<div style='width:{pct:.1f}%;background:{PRIMARY};height:20px;border-radius:7px'></div></div>"
+            f"<div style='width:58px;text-align:right;color:{SUBTLE};font-size:13px;flex:0 0 auto'>{cnt:,}</div>"
+            "</div>")
+    note = ("<div style='color:{m};font-size:11px;margin-top:10px'>App icons are trademarks of their "
+            "respective owners, shown for identification only — no affiliation or endorsement implied.</div>"
+            ).format(m=MUTE)
+    st.markdown(f"<div style='margin:4px 0 2px'>{rows}</div>{note}", unsafe_allow_html=True)
+
+
 def verdict(is_pos, conf, caption):
     color = POS if is_pos else NEG
     st.markdown(f"<div style='background:{color}1f;border:1px solid {color}55;border-radius:10px;padding:14px 16px'>"
@@ -269,7 +298,7 @@ if nav == "Data & EDA":
         st.plotly_chart(style(fig, 360), width="stretch")
 
     section("layers", "Reviews by retail app")
-    st.plotly_chart(hbar(R.CATEGORY_DIST, PRIMARY, 380), width="stretch")
+    app_bars(R.CATEGORY_DIST)
 
     st.divider()
     section("list", "Preprocessing pipeline")
