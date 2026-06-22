@@ -215,11 +215,11 @@ MODEL_COMPARISON = [
 ]
 
 PROVENANCE = (
-    "Self-collected: 9,999 reviews scraped from the Google Play Store "
+    "Self-collected: 9,999 reviews gathered once from the Google Play Store "
     "across 5 retail apps (Amazon, Walmart, Target, Best Buy, eBay) via the "
-    "google_play_scraper library, balanced to 6,500 and split "
-    "stratified 80/20. The live demo runs the DistilBERT fine-tuned on this exact "
-    "data. Because Google Play is scraped live, numbers vary slightly run to run."
+    "google_play_scraper library and saved as a fixed dataset. Balanced to 6,500 "
+    "and split stratified 80/20. The live demo runs the DistilBERT model fine-tuned "
+    "on this exact dataset. All results are computed once on this saved data and are reproducible."
 )
 KEY_TAKEAWAYS = [
     "DistilBERT outperformed the TF-IDF + Logistic Regression baseline on both accuracy and F1.",
