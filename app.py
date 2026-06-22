@@ -1,5 +1,5 @@
 """
-Amazon Review Sentiment — interactive dashboard (Option 1)
+App Review Sentiment — interactive dashboard (Option 1)
 ==========================================================
 Traditional NLP vs. Transformers on real Google Play Store reviews,
 ~10K reviews across 5 retail apps. Sidebar nav sections, Lucide icons, dark theme.
@@ -17,7 +17,7 @@ import streamlit as st
 
 import results as R
 
-st.set_page_config(page_title="Amazon Review Sentiment — ADS-509",
+st.set_page_config(page_title="App Review Sentiment — ADS-509",
                    page_icon=":material/reviews:", layout="wide",
                    initial_sidebar_state="expanded")
 pio.templates.default = "plotly_dark"
@@ -196,7 +196,7 @@ with st.sidebar:
         _bc = st.columns([1, 2, 1])
         _bc[1].image(_banner, width=84)
     st.markdown(f"<div style='display:flex;align-items:center;gap:8px;font-size:17px;font-weight:750;color:{TEXT}'>"
-                f"{icon('package',22,PRIMARY)}Amazon Sentiment</div>", unsafe_allow_html=True)
+                f"{icon('package',22,PRIMARY)}App Review Sentiment</div>", unsafe_allow_html=True)
     st.caption(f"{R.PROJECT['course']} · {R.PROJECT['school']}")
     st.divider()
     nav = st.radio("Sections", ["Data & EDA", "Results", "Try it Live"], label_visibility="collapsed")
