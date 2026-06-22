@@ -72,7 +72,7 @@ st.markdown(f"""
   .mcard .ic {{ position:absolute; top:13px; right:15px; opacity:.85; }}
   .mcard .v {{ font-size:25px; font-weight:750; line-height:1.1; color:{TEXT}; }}
   .mcard .l {{ font-size:11.5px; color:{SUBTLE}; text-transform:uppercase; letter-spacing:.05em; margin-top:3px; }}
-  .mcard .d {{ font-size:12px; margin-top:5px; }}
+  .mcard .d {{ position:absolute; bottom:11px; left:16px; font-size:12px; font-weight:600; }}
   .sec {{ display:flex; align-items:center; gap:9px; margin:6px 0 4px; }}
   .sec .t {{ font-size:18px; font-weight:700; color:{TEXT}; }}
   .panel {{ border-radius:10px; padding:13px 16px; display:flex; gap:11px; align-items:flex-start; margin:8px 0; line-height:1.5; font-size:14px; color:{TEXT}; }}
@@ -142,6 +142,16 @@ def _logo_uri(path):
         return "data:image/png;base64," + base64.b64encode(f.read()).decode()
 
 
+# brand-tinted bar fills (single colors are not protected; the disclaimer covers identification)
+APP_BAR = {
+    "Amazon Shopping": "#FF9900",
+    "Walmart": "#0071DC",
+    "Target": "#E0392B",
+    "Best Buy": "#FFD400",
+    "eBay": "linear-gradient(90deg,#E53238 0%,#0064D2 38%,#F5AF02 70%,#86B817 100%)",
+}
+
+
 def app_bars(dist):
     logo_dir = os.path.join(os.path.dirname(__file__), "assets", "apps")
     mx = max(dist.values()) or 1
@@ -151,11 +161,12 @@ def app_bars(dist):
         ic = (f"<img src='{_logo_uri(p)}' style='width:30px;height:30px;border-radius:7px;flex:0 0 auto'>"
               if os.path.exists(p) else "<div style='width:30px;flex:0 0 auto'></div>")
         pct = cnt / mx * 100
+        bg = APP_BAR.get(app, PRIMARY)
         rows += (
             f"<div style='display:flex;align-items:center;gap:13px;margin:9px 0'>{ic}"
             f"<div style='width:128px;color:{TEXT};font-size:14px;flex:0 0 auto'>{app}</div>"
             f"<div style='flex:1;background:{BORDER};border-radius:7px;height:20px;overflow:hidden'>"
-            f"<div style='width:{pct:.1f}%;background:{PRIMARY};height:20px;border-radius:7px'></div></div>"
+            f"<div style='width:{pct:.1f}%;background:{bg};height:20px;border-radius:7px'></div></div>"
             f"<div style='width:58px;text-align:right;color:{SUBTLE};font-size:13px;flex:0 0 auto'>{cnt:,}</div>"
             "</div>")
     note = ("<div style='color:{m};font-size:11px;margin-top:10px'>App icons are trademarks of their "
@@ -226,13 +237,16 @@ with st.sidebar:
         st.markdown(f"<div style='text-align:center; margin:2px 0 10px'>{open(_logo).read()}</div>", unsafe_allow_html=True)
     st.markdown(f"<div style='display:flex;align-items:center;gap:8px;font-size:17px;font-weight:750;color:{TEXT}'>"
                 f"{icon('package',22,PRIMARY)}App Review Sentiment</div>", unsafe_allow_html=True)
-    st.caption(f"{R.PROJECT['course']} · {R.PROJECT['school']}")
+    st.markdown(
+        f"<div style='font-size:15px;color:{TEXT};font-weight:700;line-height:1.35;margin-top:3px'>{R.PROJECT['course']}</div>"
+        f"<div style='font-size:12.5px;color:{MUTE};margin-top:3px'>{R.PROJECT['school']}</div>",
+        unsafe_allow_html=True)
     st.divider()
     nav = st.radio("Sections", ["Data & EDA", "Results", "Try it Live"], label_visibility="collapsed")
     st.divider()
-    st.markdown(f"{icon('users',15,SUBTLE,2,6)}<b style='color:{TEXT}'>Team</b>", unsafe_allow_html=True)
+    st.markdown(f"{icon('users',16,SUBTLE,2,6)}<b style='color:{TEXT};font-size:15px'>Team</b>", unsafe_allow_html=True)
     for mm in R.PROJECT["team"]:
-        st.markdown(f"<div style='font-size:15.5px; color:{TEXT}; font-weight:600; margin:4px 0 4px 4px'>{icon('check',13,POS,2,6)}{mm}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size:17.5px; color:{TEXT}; font-weight:650; margin:7px 0 7px 4px'>{icon('check',14,POS,2,7)}{mm}</div>", unsafe_allow_html=True)
     st.divider()
     st.markdown(badge("Fine-tuned model loaded", POS, "check") if HAS_MODEL
                 else badge("Pretrained fallback", ACCENT, "info"), unsafe_allow_html=True)
