@@ -399,7 +399,7 @@ if nav == "Data & EDA":
 elif nav == "Results":
     section("cpu", "Model comparison")
     st.caption("Three models — Logistic Regression, Naive Bayes, and DistilBERT — on the held-out test set. "
-               "F1 (weighted) is the headline metric.")
+               "F1 (weighted) is the headline metric. Y-axis is zoomed to 0.8–1.0 to make the gaps visible.")
     comp = pd.DataFrame(R.MODEL_COMPARISON)
     fig = go.Figure()
     fig.add_bar(name="Accuracy", x=comp["Model"], y=comp["Accuracy"], marker_color=PRIMARY,
@@ -407,7 +407,7 @@ elif nav == "Results":
     fig.add_bar(name="F1", x=comp["Model"], y=comp["F1 (weighted)"], marker_color=ACCENT,
                 text=[f"{v*100:.1f}%" for v in comp["F1 (weighted)"]], textposition="outside")
     fig.update_traces(textfont_color=TEXT)
-    fig.update_layout(barmode="group", yaxis=dict(range=[0, 1.0], tickformat=".0%"), yaxis_title="Score")
+    fig.update_layout(barmode="group", yaxis=dict(range=[0.8, 1.0], tickformat=".0%"), yaxis_title="Score")
     st.plotly_chart(style(fig, 360), width="stretch")
     panel("trophy", f"Fine-tuned <b>DistilBERT (F1 {R.DISTILBERT_METRICS['F1 (weighted)']*100:.1f}%)</b> beats the "
                     f"<b>TF-IDF + Logistic Regression baseline (F1 {R.LR_METRICS['F1 (weighted)']*100:.1f}%)</b> by "
