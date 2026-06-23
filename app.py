@@ -350,7 +350,7 @@ if nav == "Data & EDA":
         fig.update_layout(xaxis_title="Star rating (1-5)", yaxis_title="Reviews")
         st.plotly_chart(style(fig, 360), width="stretch")
     with c2:
-        section("scale", "Class balance (50 / 50)")
+        section("scale", "Sentiment label distribution")
         names = list(R.LABEL_BALANCE.keys())
         fig = go.Figure(go.Bar(x=names, y=list(R.LABEL_BALANCE.values()),
                                marker_color=[POS if "Positive" in n else NEG for n in names],

@@ -20,7 +20,7 @@ PROJECT = {
 
 DATASET_NAME = "Google Play Store reviews (5 retail apps)"
 DATASET_URL = "https://play.google.com/store"
-RAW_REVIEW_COUNT = 9999
+RAW_REVIEW_COUNT = 10000
 CATEGORIES = [
     "Amazon Shopping",
     "Walmart",
@@ -33,111 +33,34 @@ CATEGORY_DIST = {
     "Walmart": 2000,
     "Target": 2000,
     "eBay": 2000,
-    "Best Buy": 1999
+    "Best Buy": 2000
 }
-RATING_DISTRIBUTION = {1: 3088, 2: 693, 3: 628, 4: 620, 5: 4970}
+RATING_DISTRIBUTION = {1: 3081, 2: 703, 3: 629, 4: 623, 5: 4964}
 
 LABEL_BALANCE = {
-    "Positive (1)": 3032,
-    "Negative (0)": 3032
+    "Positive (1)": 2841,
+    "Negative (0)": 3223
 }
 BALANCED_TOTAL = 6064
 TRAIN_SIZE = 4851
 TEST_SIZE = 1213
-UNIQUE_REVIEWS = 6064
-DUPLICATE_REVIEWS = 0
+UNIQUE_REVIEWS = 5976
+DUPLICATE_REVIEWS = 88
 
 AVG_REVIEW_LENGTH = {
-    "Negative (0)": 32.7,
-    "Positive (1)": 10.6
+    "Negative (0)": 32.8,
+    "Positive (1)": 12.1
 }
 TOP_WORDS = [
-    [
-        "app",
-        2490
-    ],
-    [
-        "use",
-        646
-    ],
-    [
-        "great",
-        645
-    ],
-    [
-        "easy",
-        626
-    ],
-    [
-        "get",
-        621
-    ],
-    [
-        "love",
-        589
-    ],
-    [
-        "search",
-        542
-    ],
-    [
-        "ebay",
-        540
-    ],
-    [
-        "good",
-        538
-    ],
-    [
-        "amazon",
-        533
-    ],
-    [
-        "time",
-        530
-    ],
-    [
-        "slow",
-        493
-    ],
-    [
-        "order",
-        485
-    ],
-    [
-        "service",
-        474
-    ],
-    [
-        "items",
-        439
-    ],
-    [
-        "buy",
-        425
-    ],
-    [
-        "delivery",
-        415
-    ],
-    [
-        "best",
-        381
-    ],
-    [
-        "like",
-        379
-    ],
-    [
-        "shopping",
-        377
-    ]
+    ["app", 1894], ["get", 584], ["love", 562], ["easy", 552], ["use", 529],
+    ["great", 490], ["search", 467], ["ebay", 455], ["amazon", 436], ["time", 389],
+    ["good", 377], ["order", 376], ["like", 374], ["even", 368], ["can't", 366],
+    ["buy", 360], ["always", 355], ["best", 354], ["items", 346], ["slow", 346]
 ]
 TFIDF_TOP_FEATURES = [
     "ai",
     "amazon",
     "app",
-    "best",
     "buy",
     "delivery",
     "don",
@@ -147,6 +70,7 @@ TFIDF_TOP_FEATURES = [
     "great",
     "items",
     "just",
+    "like",
     "love",
     "order",
     "search",
@@ -221,11 +145,12 @@ MODEL_COMPARISON = [
 ]
 
 PROVENANCE = (
-    "Self-collected: 9,999 reviews gathered once from the Google Play Store "
-    "across 5 retail apps (Amazon, Walmart, Target, Best Buy, eBay) via the "
-    "google_play_scraper library and saved as a fixed dataset. Deduplicated, balanced to ~6,064, "
-    "and split stratified 80/20. The live demo runs the DistilBERT model fine-tuned "
-    "on this exact dataset. The model-performance figures shown are the team's final results from the project notebook (ADS_509_Final_Team_Project_)."
+    "Collected ~10,000 reviews (2,000 newest per app) from the Google Play Store across "
+    "5 retail apps (Amazon, Walmart, Target, Best Buy, eBay) via google_play_scraper. "
+    "After dropping 3-star neutrals, balancing, and de-duplicating, 6,064 reviews remained "
+    "(3,223 negative / 2,841 positive), split stratified 80/20 (4,851 train / 1,213 test). "
+    "All figures match the team's final project notebook (ADS_509_Final_Team_Project_); "
+    "the live demo runs a DistilBERT model fine-tuned on this data."
 )
 KEY_TAKEAWAYS = [
     "DistilBERT outperformed the TF-IDF + Logistic Regression baseline on both accuracy and F1.",
