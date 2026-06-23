@@ -38,14 +38,14 @@ CATEGORY_DIST = {
 RATING_DISTRIBUTION = {1: 3088, 2: 693, 3: 628, 4: 620, 5: 4970}
 
 LABEL_BALANCE = {
-    "Positive (1)": 3250,
-    "Negative (0)": 3250
+    "Positive (1)": 3032,
+    "Negative (0)": 3032
 }
-BALANCED_TOTAL = 6500
-TRAIN_SIZE = 5200
-TEST_SIZE = 1300
-UNIQUE_REVIEWS = 6067
-DUPLICATE_REVIEWS = 433
+BALANCED_TOTAL = 6064
+TRAIN_SIZE = 4851
+TEST_SIZE = 1213
+UNIQUE_REVIEWS = 6064
+DUPLICATE_REVIEWS = 0
 
 AVG_REVIEW_LENGTH = {
     "Negative (0)": 32.7,
@@ -164,32 +164,32 @@ TFIDF_DISCRIMINATIVE = [
 ]
 
 LR_METRICS = {
-    "Accuracy": 0.9115,
-    "Precision (weighted)": 0.9132,
-    "Recall (weighted)": 0.9115,
-    "F1 (weighted)": 0.9115,
+    "Accuracy": 0.9151,
+    "Precision (weighted)": 0.9188,
+    "Recall (weighted)": 0.9151,
+    "F1 (weighted)": 0.9146,
 }
 LR_REPORT = {
-    "Negative (0)": {"precision": 0.89, "recall": 0.94, "f1": 0.91, "support": 650},
-    "Positive (1)": {"precision": 0.94, "recall": 0.88, "f1": 0.91, "support": 650},
+    "Negative (0)": {"precision": 0.88, "recall": 0.97, "f1": 0.92, "support": 645},
+    "Positive (1)": {"precision": 0.96, "recall": 0.86, "f1": 0.90, "support": 568},
 }
 
 NB_METRICS = {
-    "Accuracy": 0.9092,
-    "Precision (weighted)": 0.9108,
-    "Recall (weighted)": 0.9092,
-    "F1 (weighted)": 0.9091,
+    "Accuracy": 0.9151,
+    "Precision (weighted)": 0.9181,
+    "Recall (weighted)": 0.9151,
+    "F1 (weighted)": 0.9147,
 }
 NB_REPORT = {
-    "Negative (0)": {"precision": 0.89, "recall": 0.94, "f1": 0.91, "support": 650},
-    "Positive (1)": {"precision": 0.94, "recall": 0.88, "f1": 0.91, "support": 650},
+    "Negative (0)": {"precision": 0.89, "recall": 0.96, "f1": 0.92, "support": 645},
+    "Positive (1)": {"precision": 0.95, "recall": 0.87, "f1": 0.91, "support": 568},
 }
 
 DISTILBERT_CONFIG = {
     "Base model": "distilbert-base-uncased",
     "Tokenizer": "WordPiece (max length 128)",
     "Epochs": "1", "Optimizer": "AdamW (lr = 2e-5)", "Batch size": "8",
-    "Eval set": "1,300 held-out reviews",
+    "Eval set": "1,213 held-out reviews",
 }
 DISTILBERT_WORKFLOW = [
     ("Tokenize", "WordPiece, max length 128 tokens"),
@@ -198,26 +198,20 @@ DISTILBERT_WORKFLOW = [
     ("Evaluate", "Accuracy and F1 on the held-out test reviews"),
 ]
 DISTILBERT_METRICS = {
-    "Accuracy": 0.9385,
-    "Precision (weighted)": 0.9387,
-    "Recall (weighted)": 0.9385,
-    "F1 (weighted)": 0.9384,
+    "Accuracy": 0.9340,
+    "Precision (weighted)": 0.9359,
+    "Recall (weighted)": 0.9340,
+    "F1 (weighted)": 0.9342,
 }
 DISTILBERT_REPORT = {
-    "Negative": {"precision": 0.95, "recall": 0.92, "f1": 0.94, "support": 625},
-    "Positive": {"precision": 0.93, "recall": 0.95, "f1": 0.94, "support": 675},
+    "Negative": {"precision": 0.96, "recall": 0.91, "f1": 0.94, "support": 657},
+    "Positive": {"precision": 0.90, "recall": 0.96, "f1": 0.93, "support": 556},
 }
 DISTILBERT_CONFUSION = [
-    [
-        576,
-        49
-    ],
-    [
-        31,
-        644
-    ]
+    [599, 58],
+    [22, 534]
 ]
-DISTILBERT_CORRECT = 1220
+DISTILBERT_CORRECT = 1133
 DISTILBERT_MISCLASSIFIED = 80
 
 MODEL_COMPARISON = [
@@ -229,9 +223,9 @@ MODEL_COMPARISON = [
 PROVENANCE = (
     "Self-collected: 9,999 reviews gathered once from the Google Play Store "
     "across 5 retail apps (Amazon, Walmart, Target, Best Buy, eBay) via the "
-    "google_play_scraper library and saved as a fixed dataset. Balanced to 6,500 "
+    "google_play_scraper library and saved as a fixed dataset. Deduplicated, balanced to ~6,064, "
     "and split stratified 80/20. The live demo runs the DistilBERT model fine-tuned "
-    "on this exact dataset. All results are computed once on this saved data and are reproducible."
+    "on this exact dataset. The model-performance figures shown are the team's final results from the project notebook (ADS_509_Final_Team_Project_)."
 )
 KEY_TAKEAWAYS = [
     "DistilBERT outperformed the TF-IDF + Logistic Regression baseline on both accuracy and F1.",
