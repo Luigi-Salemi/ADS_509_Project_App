@@ -209,6 +209,21 @@ def app_bars(dist):
     st.markdown(f"<div style='margin:4px 0 2px'>{rows}</div>{note}", unsafe_allow_html=True)
 
 
+def roc_fig():
+    colors = {"Logistic Regression": PRIMARY, "Naive Bayes": POS, "Fine-Tuned DistilBERT": ACCENT}
+    fig = go.Figure()
+    for name, dd in R.ROC_DATA.items():
+        fig.add_trace(go.Scatter(x=dd["fpr"], y=dd["tpr"], mode="lines",
+                                 name=f"{name} · AUC {dd['auc']:.3f}",
+                                 line=dict(color=colors.get(name, PRIMARY), width=2.6)))
+    fig.add_trace(go.Scatter(x=[0, 1], y=[0, 1], mode="lines", name="Random · AUC 0.500",
+                             line=dict(color=MUTE, width=1.4, dash="dash")))
+    fig.update_layout(xaxis=dict(title="False positive rate", range=[0, 1]),
+                      yaxis=dict(title="True positive rate", range=[0, 1.02]),
+                      legend=dict(x=0.97, y=0.03, xanchor="right", yanchor="bottom", bgcolor="rgba(0,0,0,0)"))
+    return style(fig, 400)
+
+
 def verdict(is_pos, conf, caption=""):
     color = POS if is_pos else NEG
     cap = f"<div style='color:{MUTE};font-size:12px;margin-top:3px'>{caption}</div>" if caption else ""
@@ -398,12 +413,29 @@ elif nav == "Results":
                     f"<b>~{GAIN} F1 points</b> — contextual embeddings capture nuance bag-of-words misses.", ACCENT)
 
     st.divider()
-    L, Rr = st.columns(2)
+    rc1, rc2 = st.columns([3, 2])
+    with rc1:
+        section("chart", "ROC curves — all three models")
+        st.plotly_chart(roc_fig(), width="stretch")
+    with rc2:
+        section("info", "Reading the ROC")
+        panel("info", "Each curve plots the true-positive rate against the false-positive rate across "
+                      "every threshold. <b>AUC</b> (area under the curve) summarizes ranking quality: "
+                      "1.0 is perfect, 0.5 is random. All three models sit well above chance, and "
+                      "<b>DistilBERT</b> has the highest AUC.", PRIMARY)
+
+    st.divider()
+    L, M, Rr = st.columns(3)
     with L:
-        section("scale", "TF-IDF + Logistic Regression")
+        section("scale", "Logistic Regression")
         st.markdown(badge("Baseline", PRIMARY, "scale"), unsafe_allow_html=True)
         metric_grid(R.LR_METRICS)
         st.dataframe(report_df(R.LR_REPORT), width="stretch")
+    with M:
+        section("chart", "Naive Bayes")
+        st.markdown(badge("Baseline", PRIMARY, "chart"), unsafe_allow_html=True)
+        metric_grid(R.NB_METRICS)
+        st.dataframe(report_df(R.NB_REPORT), width="stretch")
     with Rr:
         section("cpu", "Fine-tuned DistilBERT")
         st.markdown(badge("Best model", ACCENT, "trophy"), unsafe_allow_html=True)
