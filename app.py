@@ -212,7 +212,7 @@ def app_bars(dist):
 def roc_fig():
     colors = {"Logistic Regression": PRIMARY, "Naive Bayes": POS, "Fine-Tuned DistilBERT": ACCENT}
     fig = go.Figure()
-    for name, dd in R.ROC_DATA.items():
+    for name, dd in getattr(R, "ROC_DATA", {}).items():
         fig.add_trace(go.Scatter(x=dd["fpr"], y=dd["tpr"], mode="lines",
                                  name=f"{name} · AUC {dd['auc']:.3f}",
                                  line=dict(color=colors.get(name, PRIMARY), width=2.6)))
@@ -398,7 +398,8 @@ if nav == "Data & EDA":
 # ====================================================================== RESULTS
 elif nav == "Results":
     section("cpu", "Model comparison")
-    st.caption("Both models evaluated on the same held-out test set. F1 (weighted) is the headline metric.")
+    st.caption("Three models — Logistic Regression, Naive Bayes, and DistilBERT — on the held-out test set. "
+               "F1 (weighted) is the headline metric.")
     comp = pd.DataFrame(R.MODEL_COMPARISON)
     fig = go.Figure()
     fig.add_bar(name="Accuracy", x=comp["Model"], y=comp["Accuracy"], marker_color=PRIMARY,
@@ -412,35 +413,31 @@ elif nav == "Results":
                     f"<b>TF-IDF + Logistic Regression baseline (F1 {R.LR_METRICS['F1 (weighted)']*100:.1f}%)</b> by "
                     f"<b>~{GAIN} F1 points</b> — contextual embeddings capture nuance bag-of-words misses.", ACCENT)
 
-    st.divider()
-    rc1, rc2 = st.columns([3, 2])
-    with rc1:
-        section("chart", "ROC curves — all three models")
-        st.plotly_chart(roc_fig(), width="stretch")
-    with rc2:
-        section("info", "Reading the ROC")
-        panel("info", "Each curve plots the true-positive rate against the false-positive rate across "
-                      "every threshold. <b>AUC</b> (area under the curve) summarizes ranking quality: "
-                      "1.0 is perfect, 0.5 is random. All three models sit well above chance, and "
-                      "<b>DistilBERT</b> has the highest AUC.", PRIMARY)
+    if getattr(R, "ROC_DATA", None):
+        st.divider()
+        rc1, rc2 = st.columns([3, 2])
+        with rc1:
+            section("chart", "ROC curves — all models")
+            st.plotly_chart(roc_fig(), width="stretch")
+        with rc2:
+            section("info", "Reading the ROC")
+            panel("info", "Each curve plots the true-positive rate against the false-positive rate across "
+                          "every threshold. <b>AUC</b> (area under the curve) summarizes ranking quality: "
+                          "1.0 is perfect, 0.5 is random. All models sit well above chance, and "
+                          "<b>DistilBERT</b> has the highest AUC.", PRIMARY)
 
     st.divider()
-    L, M, Rr = st.columns(3)
-    with L:
-        section("scale", "Logistic Regression")
-        st.markdown(badge("Baseline", PRIMARY, "scale"), unsafe_allow_html=True)
-        metric_grid(R.LR_METRICS)
-        st.dataframe(report_df(R.LR_REPORT), width="stretch")
-    with M:
-        section("chart", "Naive Bayes")
-        st.markdown(badge("Baseline", PRIMARY, "chart"), unsafe_allow_html=True)
-        metric_grid(R.NB_METRICS)
-        st.dataframe(report_df(R.NB_REPORT), width="stretch")
-    with Rr:
-        section("cpu", "Fine-tuned DistilBERT")
-        st.markdown(badge("Best model", ACCENT, "trophy"), unsafe_allow_html=True)
-        metric_grid(R.DISTILBERT_METRICS)
-        st.dataframe(report_df(R.DISTILBERT_REPORT), width="stretch")
+    # built dynamically so the page never crashes mid-redeploy if results.py lags app.py
+    panels = [("scale", "Logistic Regression", "Baseline", PRIMARY, "scale", R.LR_METRICS, R.LR_REPORT)]
+    if getattr(R, "NB_METRICS", None) and getattr(R, "NB_REPORT", None):
+        panels.append(("chart", "Naive Bayes", "Baseline", PRIMARY, "chart", R.NB_METRICS, R.NB_REPORT))
+    panels.append(("cpu", "Fine-tuned DistilBERT", "Best model", ACCENT, "trophy", R.DISTILBERT_METRICS, R.DISTILBERT_REPORT))
+    for col, (ic, title, btxt, bcol, bic, met, rep) in zip(st.columns(len(panels)), panels):
+        with col:
+            section(ic, title)
+            st.markdown(badge(btxt, bcol, bic), unsafe_allow_html=True)
+            metric_grid(met)
+            st.dataframe(report_df(rep), width="stretch")
 
     st.write("")
     cm1, cm2 = st.columns(2)
